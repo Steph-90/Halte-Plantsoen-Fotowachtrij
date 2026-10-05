@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halte Plantsoen · Foto's</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#120f0b;color:#e9dcc0;font-family:Georgia,"Times New Roman",serif}
+header{text-align:center;padding:28px 18px 22px;border-bottom:1px solid #665239}
+h1{margin:0;font-size:clamp(34px,9vw,64px);letter-spacing:1px}
+.sub{margin-top:8px;font-size:17px;letter-spacing:1px}
+main{max-width:1100px;margin:auto;padding:22px 14px 40px}
+.intro{text-align:center;margin:0 0 22px;font-size:19px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;cursor:pointer;border:3px solid #604b32;border-radius:3px;background:#211a12}
+.empty{grid-column:1/-1;text-align:center;padding:45px 20px;color:#b8aa8e;border:1px solid #4d3d29}
+.viewer{display:none;position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.94);align-items:center;justify-content:center;padding:18px}
+.viewer.open{display:flex}
+.viewer img{max-width:96vw;max-height:90vh;object-fit:contain;border:5px solid #6b5438}
+.close{position:fixed;top:12px;right:16px;border:0;background:transparent;color:#e9dcc0;font-size:38px;line-height:1;cursor:pointer}
+@media(max-width:650px){.gallery{grid-template-columns:repeat(3,1fr);gap:7px}main{padding-left:9px;padding-right:9px}.photo{border-width:2px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Halte Plantsoen</h1>
+<div class="sub">1913 · Halloween · 23 oktober 2026</div>
+</header>
+<main>
+<p class="intro">De foto's van de reizigers van Trein 13</p>
+<div class="gallery" id="gallery">
+<div class="empty">De eerste foto's verschijnen hier zodra ze zijn gepubliceerd.</div>
+</div>
+</main>
+<div class="viewer" id="viewer">
+<button class="close" id="close" aria-label="Sluiten">×</button>
+<img id="largePhoto" alt="Grote foto">
+</div>
+<script>
+const gallery=document.getElementById("gallery");
+const viewer=document.getElementById("viewer");
+const largePhoto=document.getElementById("largePhoto");
+const close=document.getElementById("close");
+const publishedPhotos=[];
+function showGallery(){
+ gallery.innerHTML="";
+ if(!publishedPhotos.length){
+  gallery.innerHTML='<div class="empty">De eerste foto\'s verschijnen hier zodra ze zijn gepubliceerd.</div>';
+  return;
+ }
+ publishedPhotos.forEach(src=>{
+  const img=document.createElement("img");
+  img.className="photo"; img.src=src; img.alt="Foto Halte Plantsoen";
+  img.onclick=()=>{largePhoto.src=src;viewer.classList.add("open")};
+  gallery.appendChild(img);
+ });
+}
+function closeViewer(){viewer.classList.remove("open");largePhoto.src=""}
+close.onclick=closeViewer;
+viewer.onclick=e=>{if(e.target===viewer)closeViewer()};
+showGallery();
+</script>
+</body>
+</html>
