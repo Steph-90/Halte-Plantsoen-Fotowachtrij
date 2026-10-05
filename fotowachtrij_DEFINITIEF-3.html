@@ -91,7 +91,22 @@ function render(img){
   const w=OPEN.right-OPEN.left;
   const h=OPEN.bottom-OPEN.top;
 
-  // Foto passend in het fotovlak plaatsen
+  /*
+   * FOTO — oude 1913 uitstraling
+   */
+  ctx.save();
+
+  ctx.beginPath();
+  ctx.rect(x,y,w,h);
+  ctx.clip();
+
+  /*
+   * Eerst de foto zelf.
+   * Niet bruin maken met een dikke waas,
+   * maar subtiel ouder, donkerder en minder verzadigd.
+   */
+  ctx.filter="sepia(0.28) saturate(0.72) contrast(1.12) brightness(0.88)";
+
   const scale=Math.max(
     w/img.naturalWidth,
     h/img.naturalHeight
@@ -103,57 +118,108 @@ function render(img){
   const dx=x+(w-dw)/2;
   const dy=y+(h-dh)/2;
 
-  ctx.save();
-
-  // Alleen het fotovlak gebruiken
-  ctx.beginPath();
-  ctx.rect(x,y,w,h);
-  ctx.clip();
-
-  // Eerst de originele foto
   ctx.drawImage(img,dx,dy,dw,dh);
 
-  // 1913-kleur: warm, donker en iets vervaagd
-  ctx.globalCompositeOperation="multiply";
-  ctx.fillStyle="rgba(105,75,42,0.24)";
-  ctx.fillRect(x,y,w,h);
+  ctx.filter="none";
 
-  // Oude foto iets donkerder maken
-  ctx.globalCompositeOperation="source-over";
-  ctx.fillStyle="rgba(25,18,12,0.18)";
-  ctx.fillRect(x,y,w,h);
-
-  // Zachte sepia/warmte
+  /*
+   * Zachte warme oude-foto toon
+   */
   ctx.globalCompositeOperation="soft-light";
-  ctx.fillStyle="rgba(180,135,75,0.30)";
+  ctx.fillStyle="rgba(150,105,55,0.18)";
   ctx.fillRect(x,y,w,h);
 
-  // Randen donkerder maken
+  /*
+   * Donkere oude randen
+   */
+  ctx.globalCompositeOperation="multiply";
+
   const vignette=ctx.createRadialGradient(
     x+w/2,
     y+h/2,
-    Math.min(w,h)*0.25,
+    Math.min(w,h)*0.30,
     x+w/2,
     y+h/2,
-    Math.max(w,h)*0.70
+    Math.max(w,h)*0.72
   );
 
   vignette.addColorStop(0,"rgba(0,0,0,0)");
-  vignette.addColorStop(0.65,"rgba(20,12,7,0.08)");
-  vignette.addColorStop(1,"rgba(0,0,0,0.48)");
+  vignette.addColorStop(0.68,"rgba(0,0,0,0.08)");
+  vignette.addColorStop(1,"rgba(0,0,0,0.55)");
 
-  ctx.globalCompositeOperation="source-over";
   ctx.fillStyle=vignette;
   ctx.fillRect(x,y,w,h);
 
+  ctx.globalCompositeOperation="source-over";
+
+  /*
+   * OUDE FILM / FOTOPAPIER KORREL
+   */
+  for(let i=0;i<900;i++){
+    const px=x+Math.random()*w;
+    const py=y+Math.random()*h;
+    const size=Math.random()*2.2+0.4;
+    const alpha=Math.random()*0.10+0.025;
+
+    ctx.fillStyle=Math.random()>0.5
+      ? `rgba(255,235,190,${alpha})`
+      : `rgba(20,12,8,${alpha})`;
+
+    ctx.fillRect(px,py,size,size);
+  }
+
+  /*
+   * KRASSEN EN BARSTJES OVER DE FOTO
+   */
+  ctx.lineCap="round";
+
+  for(let i=0;i<22;i++){
+    let sx=x+Math.random()*w;
+    let sy=y+Math.random()*h;
+
+    ctx.beginPath();
+    ctx.moveTo(sx,sy);
+
+    let length=30+Math.random()*190;
+    let angle=(-0.8+Math.random()*1.6);
+
+    ctx.lineTo(
+      sx+Math.cos(angle)*length,
+      sy+Math.sin(angle)*length
+    );
+
+    ctx.strokeStyle=`rgba(245,225,185,${0.12+Math.random()*0.18})`;
+    ctx.lineWidth=0.5+Math.random()*1.2;
+    ctx.stroke();
+  }
+
+  /*
+   * Kleine oude vlekken
+   */
+  for(let i=0;i<35;i++){
+    const px=x+Math.random()*w;
+    const py=y+Math.random()*h;
+    const r=1+Math.random()*7;
+
+    ctx.beginPath();
+    ctx.arc(px,py,r,0,Math.PI*2);
+
+    ctx.fillStyle=`rgba(55,30,12,${0.04+Math.random()*0.10})`;
+    ctx.fill();
+  }
+
   ctx.restore();
 
-  // Het echte Halte Plantsoen-frame erbovenop
+  /*
+   * HET ORIGINELE HALTE PLANTSOEN-FRAME
+   * komt als laatste bovenop de foto.
+   */
   ctx.drawImage(filter,0,0);
 
   preview.style.display="block";
- }
+}
 
+ 
 input.addEventListener("change",async()=>{
  const file=input.files && input.files[0];
  if(!file)return;
