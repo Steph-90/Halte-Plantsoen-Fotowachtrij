@@ -83,7 +83,6 @@ function drawCover(img,x,y,w,h){
  function render(img){
   canvas.width=filter.naturalWidth;
   canvas.height=filter.naturalHeight;
-
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   const x=OPEN.left;
@@ -91,385 +90,127 @@ function drawCover(img,x,y,w,h){
   const w=OPEN.right-OPEN.left;
   const h=OPEN.bottom-OPEN.top;
 
-  const scale=Math.max(
-    w/img.naturalWidth,
-    h/img.naturalHeight
-  );
-
-  const dw=img.naturalWidth*scale;
-  const dh=img.naturalHeight*scale;
-
-  const dx=x+(w-dw)/2;
-  const dy=y+(h-dh)/2;
-
-  /* =====================================================
-     FOTO
-     ===================================================== */
+  /*
+   * FOTO ALS EEN ECHTE OUDE, BESCHADIGDE FOTO
+   * ------------------------------------------
+   * De foto blijft grotendeels intact en in kleur.
+   * Alleen de randen worden onregelmatig, afgesleten
+   * en op sommige plekken weggevreten.
+   */
 
   ctx.save();
 
-  ctx.beginPath();
-  ctx.rect(x,y,w,h);
-  ctx.clip();
+  const p=ctx;
 
-  /* De kleuren zoals ze nu goed zijn */
-  ctx.filter=
-    "sepia(0.38) " +
-    "saturate(0.78) " +
-    "contrast(1.16) " +
-    "brightness(0.94)";
+  p.beginPath();
 
-  ctx.drawImage(img,dx,dy,dw,dh);
+  // BOVENRAND – afgesleten en onregelmatig
+  p.moveTo(x+8,y+3);
+  p.quadraticCurveTo(x+35,y+12,x+58,y+4);
+  p.quadraticCurveTo(x+82,y-2,x+108,y+7);
+  p.quadraticCurveTo(x+145,y+14,x+175,y+5);
+  p.quadraticCurveTo(x+215,y-3,x+248,y+6);
+  p.quadraticCurveTo(x+290,y+15,x+330,y+4);
+  p.quadraticCurveTo(x+370,y-2,x+405,y+7);
+  p.quadraticCurveTo(x+450,y+15,x+492,y+4);
+  p.quadraticCurveTo(x+535,y-3,x+575,y+8);
+  p.quadraticCurveTo(x+620,y+15,x+665,y+4);
+  p.quadraticCurveTo(x+710,y-3,x+755,y+8);
+  p.quadraticCurveTo(x+805,y+15,x+850,y+4);
+  p.quadraticCurveTo(x+900,y-3,x+945,y+8);
+  p.quadraticCurveTo(x+995,y+15,x+1040,y+4);
+  p.quadraticCurveTo(x+1090,y-3,x+1135,y+8);
+  p.quadraticCurveTo(x+1185,y+15,x+1230,y+4);
+  p.quadraticCurveTo(x+1280,y-3,x+1325,y+8);
+  p.quadraticCurveTo(x+1375,y+15,x+w-10,y+4);
 
-  ctx.filter="none";
+  // RECHTERKANT – diepe slijtageplekken
+  p.quadraticCurveTo(x+w+3,y+45,x+w-8,y+78);
+  p.quadraticCurveTo(x+w-18,y+105,x+w-5,y+135);
+  p.quadraticCurveTo(x+w+2,y+165,x+w-10,y+195);
+  p.quadraticCurveTo(x+w-22,y+225,x+w-6,y+255);
+  p.quadraticCurveTo(x+w+2,y+285,x+w-12,y+315);
+  p.quadraticCurveTo(x+w-24,y+345,x+w-7,y+375);
+  p.quadraticCurveTo(x+w+2,y+410,x+w-11,y+445);
+  p.quadraticCurveTo(x+w-20,y+480,x+w-6,y+515);
+  p.quadraticCurveTo(x+w+3,y+550,x+w-10,y+585);
+  p.quadraticCurveTo(x+w-20,y+620,x+w-7,y+655);
+  p.quadraticCurveTo(x+w+2,y+690,x+w-10,y+725);
+  p.quadraticCurveTo(x+w-18,y+755,x+w-5,y+h-8);
 
-  /* subtiele warme verkleuring */
-  ctx.globalCompositeOperation="multiply";
-  ctx.fillStyle="rgba(105,70,38,0.09)";
-  ctx.fillRect(x,y,w,h);
+  // ONDERKANT – afgescheurd / beschadigd
+  p.quadraticCurveTo(x+w-45,y+h+4,x+w-85,y+h-7);
+  p.quadraticCurveTo(x+w-125,y+h-18,x+w-165,y+h-5);
+  p.quadraticCurveTo(x+w-205,y+h+5,x+w-245,y+h-8);
+  p.quadraticCurveTo(x+w-285,y+h-18,x+w-325,y+h-5);
+  p.quadraticCurveTo(x+w-370,y+h+5,x+w-415,y+h-8);
+  p.quadraticCurveTo(x+w-460,y+h-18,x+w-505,y+h-5);
+  p.quadraticCurveTo(x+w-550,y+h+6,x+w-595,y+h-8);
+  p.quadraticCurveTo(x+w-640,y+h-18,x+w-685,y+h-5);
+  p.quadraticCurveTo(x+w-730,y+h+6,x+w-775,y+h-8);
+  p.quadraticCurveTo(x+w-820,y+h-18,x+w-865,y+h-5);
+  p.quadraticCurveTo(x+w-910,y+h+6,x+w-955,y+h-8);
+  p.quadraticCurveTo(x+w-1000,y+h-18,x+w-1045,y+h-5);
+  p.quadraticCurveTo(x+w-1090,y+h+6,x+w-1135,y+h-8);
+  p.quadraticCurveTo(x+w-1180,y+h-18,x+w-1225,y+h-5);
+  p.quadraticCurveTo(x+w-1270,y+h+6,x+w-1315,y+h-8);
+  p.quadraticCurveTo(x+220,y+h-18,x+180,y+h-5);
+  p.quadraticCurveTo(x+140,y+h+6,x+100,y+h-7);
+  p.quadraticCurveTo(x+55,y+h-16,x+8,y+h-5);
 
-  /* donkere oude hoeken */
-  const vignette=ctx.createRadialGradient(
-    x+w/2,
-    y+h/2,
-    Math.min(w,h)*0.28,
-    x+w/2,
-    y+h/2,
-    Math.max(w,h)*0.72
-  );
+  // LINKERKANT – rafelig en afgesleten
+  p.quadraticCurveTo(x-4,y+h-45,x+7,y+h-80);
+  p.quadraticCurveTo(x+17,y+h-110,x+4,y+h-145);
+  p.quadraticCurveTo(x-5,y+h-180,x+8,y+h-215);
+  p.quadraticCurveTo(x+18,y+h-250,x+4,y+h-285);
+  p.quadraticCurveTo(x-5,y+h-320,x+8,y+h-355);
+  p.quadraticCurveTo(x+18,y+h-390,x+4,y+h-425);
+  p.quadraticCurveTo(x-5,y+h-460,x+8,y+h-495);
+  p.quadraticCurveTo(x+18,y+h-530,x+4,y+h-565);
+  p.quadraticCurveTo(x-5,y+h-600,x+8,y+h-635);
+  p.quadraticCurveTo(x+18,y+h-670,x+4,y+h-705);
+  p.quadraticCurveTo(x-5,y+h-740,x+8,y+10);
 
-  vignette.addColorStop(0,"rgba(0,0,0,0)");
-  vignette.addColorStop(0.68,"rgba(20,12,7,0.06)");
-  vignette.addColorStop(0.84,"rgba(20,12,7,0.16)");
-  vignette.addColorStop(1,"rgba(0,0,0,0.46)");
+  p.closePath();
+  p.clip();
 
-  ctx.fillStyle=vignette;
-  ctx.fillRect(x,y,w,h);
+  // Foto blijft in kleur en wordt alleen passend uitgesneden.
+  drawCover(img,x,y,w,h);
 
-  /* =====================================================
-     VASTE RANDOM
-     ===================================================== */
-
-  let seed=1913;
-
-  function rnd(){
-    seed=(seed*1664525+1013904223)>>>0;
-    return seed/4294967296;
-  }
-
-  /* =====================================================
-     OUDE VLEKKEN
-     ===================================================== */
-
-  ctx.globalCompositeOperation="multiply";
-
-  for(let i=0;i<55;i++){
-
-    const px=x+rnd()*w;
-    const py=y+rnd()*h;
-    const r=3+rnd()*25;
-
-    const stain=ctx.createRadialGradient(
-      px,py,0,
-      px,py,r
-    );
-
-    stain.addColorStop(
-      0,
-      `rgba(55,28,10,${0.04+rnd()*0.10})`
-    );
-
-    stain.addColorStop(
-      1,
-      "rgba(55,28,10,0)"
-    );
-
-    ctx.fillStyle=stain;
-
-    ctx.beginPath();
-    ctx.arc(px,py,r,0,Math.PI*2);
-    ctx.fill();
-  }
-
-  /* =====================================================
-     LICHTE PAPIERKORREL
-     ===================================================== */
-
-  ctx.globalCompositeOperation="overlay";
-
-  for(let i=0;i<1600;i++){
-
-    const px=x+rnd()*w;
-    const py=y+rnd()*h;
-    const size=0.4+rnd()*1.5;
-
-    ctx.fillStyle=
-      rnd()>0.5
-      ? `rgba(255,235,190,${0.02+rnd()*0.055})`
-      : `rgba(10,7,4,${0.02+rnd()*0.055})`;
-
-    ctx.fillRect(px,py,size,size);
-  }
-
-  /* =====================================================
-     KRASSEN
-     ===================================================== */
-
-  ctx.globalCompositeOperation="screen";
-  ctx.lineCap="round";
-
-  for(let i=0;i<20;i++){
-
-    const sx=x+rnd()*w;
-    const sy=y+rnd()*h;
-
-    const length=40+rnd()*240;
-    const angle=-1.2+rnd()*2.4;
-
-    ctx.beginPath();
-    ctx.moveTo(sx,sy);
-
-    ctx.lineTo(
-      sx+Math.cos(angle)*length,
-      sy+Math.sin(angle)*length
-    );
-
-    ctx.strokeStyle=
-      `rgba(255,232,190,${0.09+rnd()*0.15})`;
-
-    ctx.lineWidth=
-      0.4+rnd()*0.9;
-
-    ctx.stroke();
-  }
-
-  /* =====================================================
-     BARSTEN
-     ===================================================== */
-
-  for(let i=0;i<10;i++){
-
-    let px=x+rnd()*w;
-    let py=y+rnd()*h;
-
-    ctx.beginPath();
-    ctx.moveTo(px,py);
-
-    const points=4+Math.floor(rnd()*6);
-
-    for(let j=0;j<points;j++){
-
-      px+=-20+rnd()*40;
-      py+=15+rnd()*45;
-
-      ctx.lineTo(px,py);
-    }
-
-    ctx.strokeStyle=
-      `rgba(255,235,205,${0.16+rnd()*0.20})`;
-
-    ctx.lineWidth=
-      0.5+rnd()*0.8;
-
-    ctx.stroke();
-  }
-
-  ctx.restore();
-
-
-  /* =====================================================
-     NU HET BELANGRIJKE DEEL:
-     DE FOTO-RAND ECHT KAPOT MAKEN
-     ===================================================== */
-
-  ctx.save();
+  p.restore();
 
   /*
-   * destination-out wist werkelijk stukken van de foto.
-   * Omdat het frame daarna opnieuw wordt getekend,
-   * komt het oude frame door de beschadigingen heen.
+   * Extra oude beschadigingen:
+   * fijne scheuren en slijtage, maar subtiel genoeg
+   * dat de foto herkenbaar en kleurrijk blijft.
    */
+  p.save();
 
-  ctx.globalCompositeOperation="destination-out";
+  p.strokeStyle="rgba(225,210,175,0.28)";
+  p.lineWidth=1.2;
 
-  function chip(side){
+  const cracks=[
+    [x+55,y+80,x+105,y+210,x+72,y+335],
+    [x+310,y+15,x+285,y+125,x+330,y+250],
+    [x+720,y+95,x+690,y+210,x+735,y+350],
+    [x+1090,y+40,x+1120,y+165,x+1080,y+290],
+    [x+1370,y+130,x+1340,y+270,x+1380,y+420],
+    [x+170,y+470,x+125,y+590,x+155,y+735],
+    [x+520,y+400,x+550,y+520,x+515,y+700],
+    [x+920,y+350,x+890,y+500,x+935,y+700]
+  ];
 
-    let cx,cy;
+  cracks.forEach(c=>{
+    p.beginPath();
+    p.moveTo(c[0],c[1]);
+    p.quadraticCurveTo(c[2],c[3],c[4],c[5]);
+    p.stroke();
+  });
 
-    const depth=8+rnd()*34;
-    const width=18+rnd()*55;
+  p.restore();
 
-    ctx.beginPath();
-
-    if(side==="top"){
-
-      cx=x+rnd()*w;
-      cy=y;
-
-      ctx.moveTo(cx-width,cy);
-      ctx.lineTo(cx-width*0.45,cy+depth*rnd());
-      ctx.lineTo(cx-width*0.15,cy+depth);
-      ctx.lineTo(cx+width*0.20,cy+depth*(0.25+rnd()*0.75));
-      ctx.lineTo(cx+width*0.55,cy+depth*0.35);
-      ctx.lineTo(cx+width,cy);
-
-    }else if(side==="bottom"){
-
-      cx=x+rnd()*w;
-      cy=y+h;
-
-      ctx.moveTo(cx-width,cy);
-      ctx.lineTo(cx-width*0.45,cy-depth*0.35);
-      ctx.lineTo(cx-width*0.15,cy-depth);
-      ctx.lineTo(cx+width*0.20,cy-depth*(0.25+rnd()*0.75));
-      ctx.lineTo(cx+width*0.55,cy-depth*0.35);
-      ctx.lineTo(cx+width,cy);
-
-    }else if(side==="left"){
-
-      cx=x;
-      cy=y+rnd()*h;
-
-      ctx.moveTo(cx,cy-width);
-      ctx.lineTo(cx+depth*0.35,cy-width*0.45);
-      ctx.lineTo(cx+depth,cy-width*0.15);
-      ctx.lineTo(cx+depth*(0.25+rnd()*0.75),cy+width*0.20);
-      ctx.lineTo(cx+depth*0.35,cy+width*0.55);
-      ctx.lineTo(cx,cy+width);
-
-    }else{
-
-      cx=x+w;
-      cy=y+rnd()*h;
-
-      ctx.moveTo(cx,cy-width);
-      ctx.lineTo(cx-depth*0.35,cy-width*0.45);
-      ctx.lineTo(cx-depth,cy-width*0.15);
-      ctx.lineTo(cx-depth*(0.25+rnd()*0.75),cy+width*0.20);
-      ctx.lineTo(cx-depth*0.35,cy+width*0.55);
-      ctx.lineTo(cx,cy+width);
-    }
-
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  /*
-   * Grote onregelmatige happen.
-   */
-
-  for(let i=0;i<13;i++) chip("top");
-  for(let i=0;i<13;i++) chip("bottom");
-  for(let i=0;i<13;i++) chip("left");
-  for(let i=0;i<13;i++) chip("right");
-
-
-  /* =====================================================
-     EXTRA DIEPE BESCHADIGINGEN BIJ DE HOEKEN
-     ===================================================== */
-
-  function cornerDamage(cx,cy,flipX,flipY){
-
-    ctx.beginPath();
-
-    ctx.moveTo(cx,cy);
-
-    ctx.lineTo(
-      cx+flipX*(25+rnd()*35),
-      cy+flipY*(5+rnd()*18)
-    );
-
-    ctx.lineTo(
-      cx+flipX*(12+rnd()*25),
-      cy+flipY*(30+rnd()*45)
-    );
-
-    ctx.lineTo(
-      cx+flipX*(38+rnd()*45),
-      cy+flipY*(22+rnd()*35)
-    );
-
-    ctx.lineTo(
-      cx+flipX*(20+rnd()*35),
-      cy+flipY*(55+rnd()*45)
-    );
-
-    ctx.lineTo(cx,cy);
-
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  cornerDamage(x,y,1,1);
-  cornerDamage(x+w,y,-1,1);
-  cornerDamage(x,y+h,1,-1);
-  cornerDamage(x+w,y+h,-1,-1);
-
-
-  /*
-   * Kleine hapjes tussen de grote beschadigingen.
-   */
-
-  for(let i=0;i<35;i++){
-
-    let side=Math.floor(rnd()*4);
-
-    let px,py;
-
-    if(side===0){
-      px=x+rnd()*w;
-      py=y;
-    }else if(side===1){
-      px=x+w;
-      py=y+rnd()*h;
-    }else if(side===2){
-      px=x+rnd()*w;
-      py=y+h;
-    }else{
-      px=x;
-      py=y+rnd()*h;
-    }
-
-    const r=2+rnd()*10;
-
-    ctx.beginPath();
-    ctx.arc(px,py,r,0,Math.PI*2);
-    ctx.fill();
-  }
-
-  ctx.restore();
-
-
-  /* =====================================================
-     BESCHADIGDE RAND NOG ZICHTBAAR MAKEN
-     ===================================================== */
-
-  ctx.save();
-
-  ctx.globalCompositeOperation="multiply";
-
-  /*
-   * Donkere verkleurde rand rondom het fotovlak.
-   */
-
-  ctx.strokeStyle="rgba(55,28,10,0.48)";
-  ctx.lineWidth=5;
-
-  ctx.strokeRect(
-    x+2,
-    y+2,
-    w-4,
-    h-4
-  );
-
-  ctx.restore();
-
-
-  /* =====================================================
-     HET BESTAANDE HALTE PLANTSOEN-FRAME
-     ===================================================== */
-
-  ctx.drawImage(filter,0,0);
+  // De originele definitieve lijst/filter komt als laatste bovenop.
+  p.drawImage(filter,0,0);
 
   preview.style.display="block";
 }
