@@ -108,40 +108,55 @@ function render(img){
   ctx.rect(x,y,w,h);
   ctx.clip();
 
-  /* OUDE 1913-FOTO */
+  /*
+   * OUDE FOTO
+   * Meer originele kleur behouden.
+   */
   ctx.filter=
-    "sepia(0.62) " +
-    "saturate(0.52) " +
-    "contrast(1.14) " +
+    "sepia(0.38) " +
+    "saturate(0.78) " +
+    "contrast(1.16) " +
     "brightness(0.94)";
 
   ctx.drawImage(img,dx,dy,dw,dh);
 
   ctx.filter="none";
 
-  /* WARME VERKLEURING */
+
+  /*
+   * WARME VERKLEURING
+   */
   ctx.globalCompositeOperation="multiply";
-  ctx.fillStyle="rgba(105,70,38,0.12)";
+  ctx.fillStyle="rgba(105,70,38,0.09)";
   ctx.fillRect(x,y,w,h);
 
-  /* DONKERE HOEKEN */
+
+  /*
+   * DONKERE OUDE HOEKEN
+   */
   const vignette=ctx.createRadialGradient(
     x+w/2,
     y+h/2,
-    Math.min(w,h)*0.28,
+    Math.min(w,h)*0.27,
     x+w/2,
     y+h/2,
     Math.max(w,h)*0.72
   );
 
   vignette.addColorStop(0,"rgba(0,0,0,0)");
-  vignette.addColorStop(0.68,"rgba(25,14,7,0.10)");
+  vignette.addColorStop(0.62,"rgba(20,12,7,0.05)");
+  vignette.addColorStop(0.82,"rgba(20,12,7,0.16)");
   vignette.addColorStop(1,"rgba(0,0,0,0.48)");
 
   ctx.fillStyle=vignette;
   ctx.fillRect(x,y,w,h);
 
-  /* VASTE RANDOM = ELKE KEER DEZELFDE BESCHADIGINGEN */
+
+  /*
+   * VASTE RANDOM
+   * Hierdoor blijven de beschadigingen hetzelfde
+   * wanneer de foto opnieuw wordt getekend.
+   */
   let seed=1913;
 
   const rnd=()=>{
@@ -149,85 +164,102 @@ function render(img){
     return seed/4294967296;
   };
 
-  /* OUDE VLEKKEN */
+
+  /*
+   * OUDE VLEKKEN
+   */
   ctx.globalCompositeOperation="multiply";
 
-  for(let i=0;i<45;i++){
+  for(let i=0;i<70;i++){
 
     const px=x+rnd()*w;
     const py=y+rnd()*h;
-    const r=4+rnd()*28;
+    const r=3+rnd()*30;
 
-    const g=ctx.createRadialGradient(
+    const stain=ctx.createRadialGradient(
       px,py,0,
       px,py,r
     );
 
-    g.addColorStop(
+    stain.addColorStop(
       0,
-      `rgba(65,38,16,${0.05+rnd()*0.11})`
+      `rgba(55,28,10,${0.06+rnd()*0.14})`
     );
 
-    g.addColorStop(
+    stain.addColorStop(
+      0.65,
+      `rgba(75,40,15,${0.025+rnd()*0.08})`
+    );
+
+    stain.addColorStop(
       1,
-      "rgba(65,38,16,0)"
+      "rgba(75,40,15,0)"
     );
 
-    ctx.fillStyle=g;
+    ctx.fillStyle=stain;
 
     ctx.beginPath();
     ctx.arc(px,py,r,0,Math.PI*2);
     ctx.fill();
   }
 
-  /* PAPIERKORREL / STOF */
+
+  /*
+   * PAPIERKORREL
+   */
   ctx.globalCompositeOperation="overlay";
 
-  for(let i=0;i<1800;i++){
+  for(let i=0;i<2200;i++){
 
     const px=x+rnd()*w;
     const py=y+rnd()*h;
-    const s=0.35+rnd()*1.5;
+    const s=0.4+rnd()*1.8;
 
     ctx.fillStyle=
-      rnd()>0.5
-      ? `rgba(255,240,205,${0.025+rnd()*0.065})`
-      : `rgba(15,9,5,${0.025+rnd()*0.065})`;
+      rnd()>0.48
+      ? `rgba(255,235,190,${0.025+rnd()*0.075})`
+      : `rgba(10,7,4,${0.025+rnd()*0.075})`;
 
     ctx.fillRect(px,py,s,s);
   }
 
-  /* ZICHTBARE KRASSEN */
+
+  /*
+   * DUIDELIJKE KRASSEN
+   */
   ctx.globalCompositeOperation="screen";
   ctx.lineCap="round";
 
-  for(let i=0;i<28;i++){
+  for(let i=0;i<42;i++){
 
-    const sx=x+rnd()*w;
-    const sy=y+rnd()*h;
+    let sx=x+rnd()*w;
+    let sy=y+rnd()*h;
 
-    const len=45+rnd()*260;
-    const ang=-1.2+rnd()*2.4;
+    const len=45+rnd()*300;
+    const angle=-1.25+rnd()*2.5;
 
     ctx.beginPath();
     ctx.moveTo(sx,sy);
 
     ctx.lineTo(
-      sx+Math.cos(ang)*len,
-      sy+Math.sin(ang)*len
+      sx+Math.cos(angle)*len,
+      sy+Math.sin(angle)*len
     );
 
     ctx.strokeStyle=
-      `rgba(255,235,195,${0.12+rnd()*0.22})`;
+      `rgba(255,232,190,${0.12+rnd()*0.22})`;
 
     ctx.lineWidth=
-      0.45+rnd()*1.15;
+      0.45+rnd()*1.25;
 
     ctx.stroke();
   }
 
-  /* BARSTJES */
-  for(let i=0;i<11;i++){
+
+  /*
+   * GROTERE BARSTEN
+   */
+  for(let i=0;i<15;i++){
 
     let px=x+rnd()*w;
     let py=y+rnd()*h;
@@ -235,28 +267,29 @@ function render(img){
     ctx.beginPath();
     ctx.moveTo(px,py);
 
-    const pts=4+Math.floor(rnd()*6);
+    const points=5+Math.floor(rnd()*7);
 
-    for(let j=0;j<pts;j++){
+    for(let j=0;j<points;j++){
 
-      px+=-18+rnd()*36;
-      py+=14+rnd()*48;
+      px+=-22+rnd()*44;
+      py+=12+rnd()*52;
 
       ctx.lineTo(px,py);
     }
 
     ctx.strokeStyle=
-      `rgba(255,235,205,${0.18+rnd()*0.22})`;
+      `rgba(255,235,205,${0.20+rnd()*0.22})`;
 
     ctx.lineWidth=
-      0.55+rnd()*0.9;
+      0.55+rnd()*1.0;
 
     ctx.stroke();
 
-    /* kleine vertakkingen */
-    const branches=1+Math.floor(rnd()*2);
 
-    for(let b=0;b<branches;b++){
+    /*
+     * Zijtakken van de barst
+     */
+    if(rnd()>0.35){
 
       let bx=px;
       let by=py;
@@ -264,49 +297,132 @@ function render(img){
       ctx.beginPath();
       ctx.moveTo(bx,by);
 
-      for(let j=0;j<2+Math.floor(rnd()*3);j++){
+      for(let j=0;j<3;j++){
 
-        bx+=-22+rnd()*44;
-        by+=8+rnd()*28;
+        bx+=-35+rnd()*70;
+        by+=8+rnd()*30;
 
         ctx.lineTo(bx,by);
       }
 
       ctx.strokeStyle=
-        `rgba(255,235,205,${0.10+rnd()*0.15})`;
+        `rgba(255,235,205,${0.12+rnd()*0.18})`;
 
-      ctx.lineWidth=
-        0.4+rnd()*0.65;
-
+      ctx.lineWidth=0.5+rnd()*0.7;
       ctx.stroke();
     }
   }
 
-  /* DONKERE BESCHADIGINGEN */
+
+  /*
+   * DONKERE SCHEURTJES / BESCHADIGINGEN
+   */
   ctx.globalCompositeOperation="multiply";
 
-  for(let i=0;i<75;i++){
+  for(let i=0;i<90;i++){
 
     const px=x+rnd()*w;
     const py=y+rnd()*h;
-    const r=0.5+rnd()*4.5;
+    const r=0.7+rnd()*5;
 
     ctx.fillStyle=
-      `rgba(50,28,10,${0.08+rnd()*0.15})`;
+      `rgba(45,23,8,${0.10+rnd()*0.18})`;
 
     ctx.beginPath();
     ctx.arc(px,py,r,0,Math.PI*2);
     ctx.fill();
   }
 
+
+  /*
+   * ------------------------------------------------------------
+   * BESCHADIGDE RAND VAN DE FOTO
+   * ------------------------------------------------------------
+   */
+
+  ctx.globalCompositeOperation="multiply";
+
+  /*
+   * Ongelijke donkere rand
+   */
+  ctx.lineWidth=3;
+
+  for(let i=0;i<55;i++){
+
+    const side=Math.floor(rnd()*4);
+
+    let px,py;
+
+    if(side===0){
+      px=x+rnd()*w;
+      py=y+rnd()*18;
+    }else if(side===1){
+      px=x+w-rnd()*18;
+      py=y+rnd()*h;
+    }else if(side===2){
+      px=x+rnd()*w;
+      py=y+h-rnd()*18;
+    }else{
+      px=x+rnd()*18;
+      py=y+rnd()*h;
+    }
+
+    const r=2+rnd()*12;
+
+    ctx.fillStyle=
+      `rgba(45,24,9,${0.12+rnd()*0.22})`;
+
+    ctx.beginPath();
+    ctx.arc(px,py,r,0,Math.PI*2);
+    ctx.fill();
+  }
+
+
+  /*
+   * Afgesleten lichte stukjes langs de rand
+   */
+  ctx.globalCompositeOperation="screen";
+
+  for(let i=0;i<45;i++){
+
+    const side=Math.floor(rnd()*4);
+
+    let px,py;
+
+    if(side===0){
+      px=x+rnd()*w;
+      py=y+rnd()*12;
+    }else if(side===1){
+      px=x+w-rnd()*12;
+      py=y+rnd()*h;
+    }else if(side===2){
+      px=x+rnd()*w;
+      py=y+h-rnd()*12;
+    }else{
+      px=x+rnd()*12;
+      py=y+rnd()*h;
+    }
+
+    ctx.fillStyle=
+      `rgba(235,205,155,${0.12+rnd()*0.18})`;
+
+    ctx.beginPath();
+    ctx.arc(px,py,1+rnd()*5,0,Math.PI*2);
+    ctx.fill();
+  }
+
   ctx.restore();
 
-  /* HALTE PLANTSOEN FRAME */
+
+  /*
+   * HET BESTAANDE HALTE PLANTSOEN-FRAME
+   * blijft helemaal bovenop liggen.
+   */
   ctx.drawImage(filter,0,0);
 
   preview.style.display="block";
 }
- 
+
 input.addEventListener("change",async()=>{
  const file=input.files && input.files[0];
  if(!file)return;
