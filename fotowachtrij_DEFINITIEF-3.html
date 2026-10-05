@@ -81,20 +81,78 @@ function drawCover(img,x,y,w,h){
 }
 
 function render(img){
- canvas.width=filter.naturalWidth;
- canvas.height=filter.naturalHeight;
- ctx.clearRect(0,0,canvas.width,canvas.height);
+  canvas.width=filter.naturalWidth;
+  canvas.height=filter.naturalHeight;
 
- const x=OPEN.left;
- const y=OPEN.top;
- const w=OPEN.right-OPEN.left;
- const h=OPEN.bottom-OPEN.top;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
- drawCover(img,x,y,w,h);
- ctx.drawImage(filter,0,0);
+  const x=OPEN.left;
+  const y=OPEN.top;
+  const w=OPEN.right-OPEN.left;
+  const h=OPEN.bottom-OPEN.top;
 
- preview.style.display="block";
-}
+  // Foto passend in het fotovlak plaatsen
+  const scale=Math.max(
+    w/img.naturalWidth,
+    h/img.naturalHeight
+  );
+
+  const dw=img.naturalWidth*scale;
+  const dh=img.naturalHeight*scale;
+
+  const dx=x+(w-dw)/2;
+  const dy=y+(h-dh)/2;
+
+  ctx.save();
+
+  // Alleen het fotovlak gebruiken
+  ctx.beginPath();
+  ctx.rect(x,y,w,h);
+  ctx.clip();
+
+  // Eerst de originele foto
+  ctx.drawImage(img,dx,dy,dw,dh);
+
+  // 1913-kleur: warm, donker en iets vervaagd
+  ctx.globalCompositeOperation="multiply";
+  ctx.fillStyle="rgba(105,75,42,0.24)";
+  ctx.fillRect(x,y,w,h);
+
+  // Oude foto iets donkerder maken
+  ctx.globalCompositeOperation="source-over";
+  ctx.fillStyle="rgba(25,18,12,0.18)";
+  ctx.fillRect(x,y,w,h);
+
+  // Zachte sepia/warmte
+  ctx.globalCompositeOperation="soft-light";
+  ctx.fillStyle="rgba(180,135,75,0.30)";
+  ctx.fillRect(x,y,w,h);
+
+  // Randen donkerder maken
+  const vignette=ctx.createRadialGradient(
+    x+w/2,
+    y+h/2,
+    Math.min(w,h)*0.25,
+    x+w/2,
+    y+h/2,
+    Math.max(w,h)*0.70
+  );
+
+  vignette.addColorStop(0,"rgba(0,0,0,0)");
+  vignette.addColorStop(0.65,"rgba(20,12,7,0.08)");
+  vignette.addColorStop(1,"rgba(0,0,0,0.48)");
+
+  ctx.globalCompositeOperation="source-over";
+  ctx.fillStyle=vignette;
+  ctx.fillRect(x,y,w,h);
+
+  ctx.restore();
+
+  // Het echte Halte Plantsoen-frame erbovenop
+  ctx.drawImage(filter,0,0);
+
+  preview.style.display="block";
+ }
 
 input.addEventListener("change",async()=>{
  const file=input.files && input.files[0];
