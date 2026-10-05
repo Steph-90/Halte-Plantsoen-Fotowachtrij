@@ -91,22 +91,6 @@ function render(img){
   const w=OPEN.right-OPEN.left;
   const h=OPEN.bottom-OPEN.top;
 
-  /*
-   * FOTO — oude 1913 uitstraling
-   */
-  ctx.save();
-
-  ctx.beginPath();
-  ctx.rect(x,y,w,h);
-  ctx.clip();
-
-  /*
-   * Eerst de foto zelf.
-   * Niet bruin maken met een dikke waas,
-   * maar subtiel ouder, donkerder en minder verzadigd.
-   */
-  ctx.filter="sepia(0.28) saturate(0.72) contrast(1.12) brightness(0.88)";
-
   const scale=Math.max(
     w/img.naturalWidth,
     h/img.naturalHeight
@@ -118,107 +102,210 @@ function render(img){
   const dx=x+(w-dw)/2;
   const dy=y+(h-dh)/2;
 
+  ctx.save();
+
+  ctx.beginPath();
+  ctx.rect(x,y,w,h);
+  ctx.clip();
+
+  /* OUDE 1913-FOTO */
+  ctx.filter=
+    "sepia(0.62) " +
+    "saturate(0.52) " +
+    "contrast(1.14) " +
+    "brightness(0.94)";
+
   ctx.drawImage(img,dx,dy,dw,dh);
 
   ctx.filter="none";
 
-  /*
-   * Zachte warme oude-foto toon
-   */
-  ctx.globalCompositeOperation="soft-light";
-  ctx.fillStyle="rgba(150,105,55,0.18)";
+  /* WARME VERKLEURING */
+  ctx.globalCompositeOperation="multiply";
+  ctx.fillStyle="rgba(105,70,38,0.12)";
   ctx.fillRect(x,y,w,h);
 
-  /*
-   * Donkere oude randen
-   */
-  ctx.globalCompositeOperation="multiply";
-
+  /* DONKERE HOEKEN */
   const vignette=ctx.createRadialGradient(
     x+w/2,
     y+h/2,
-    Math.min(w,h)*0.30,
+    Math.min(w,h)*0.28,
     x+w/2,
     y+h/2,
     Math.max(w,h)*0.72
   );
 
   vignette.addColorStop(0,"rgba(0,0,0,0)");
-  vignette.addColorStop(0.68,"rgba(0,0,0,0.08)");
-  vignette.addColorStop(1,"rgba(0,0,0,0.55)");
+  vignette.addColorStop(0.68,"rgba(25,14,7,0.10)");
+  vignette.addColorStop(1,"rgba(0,0,0,0.48)");
 
   ctx.fillStyle=vignette;
   ctx.fillRect(x,y,w,h);
 
-  ctx.globalCompositeOperation="source-over";
+  /* VASTE RANDOM = ELKE KEER DEZELFDE BESCHADIGINGEN */
+  let seed=1913;
 
-  /*
-   * OUDE FILM / FOTOPAPIER KORREL
-   */
-  for(let i=0;i<900;i++){
-    const px=x+Math.random()*w;
-    const py=y+Math.random()*h;
-    const size=Math.random()*2.2+0.4;
-    const alpha=Math.random()*0.10+0.025;
+  const rnd=()=>{
+    seed=(seed*1664525+1013904223)>>>0;
+    return seed/4294967296;
+  };
 
-    ctx.fillStyle=Math.random()>0.5
-      ? `rgba(255,235,190,${alpha})`
-      : `rgba(20,12,8,${alpha})`;
+  /* OUDE VLEKKEN */
+  ctx.globalCompositeOperation="multiply";
 
-    ctx.fillRect(px,py,size,size);
+  for(let i=0;i<45;i++){
+
+    const px=x+rnd()*w;
+    const py=y+rnd()*h;
+    const r=4+rnd()*28;
+
+    const g=ctx.createRadialGradient(
+      px,py,0,
+      px,py,r
+    );
+
+    g.addColorStop(
+      0,
+      `rgba(65,38,16,${0.05+rnd()*0.11})`
+    );
+
+    g.addColorStop(
+      1,
+      "rgba(65,38,16,0)"
+    );
+
+    ctx.fillStyle=g;
+
+    ctx.beginPath();
+    ctx.arc(px,py,r,0,Math.PI*2);
+    ctx.fill();
   }
 
-  /*
-   * KRASSEN EN BARSTJES OVER DE FOTO
-   */
+  /* PAPIERKORREL / STOF */
+  ctx.globalCompositeOperation="overlay";
+
+  for(let i=0;i<1800;i++){
+
+    const px=x+rnd()*w;
+    const py=y+rnd()*h;
+    const s=0.35+rnd()*1.5;
+
+    ctx.fillStyle=
+      rnd()>0.5
+      ? `rgba(255,240,205,${0.025+rnd()*0.065})`
+      : `rgba(15,9,5,${0.025+rnd()*0.065})`;
+
+    ctx.fillRect(px,py,s,s);
+  }
+
+  /* ZICHTBARE KRASSEN */
+  ctx.globalCompositeOperation="screen";
   ctx.lineCap="round";
 
-  for(let i=0;i<22;i++){
-    let sx=x+Math.random()*w;
-    let sy=y+Math.random()*h;
+  for(let i=0;i<28;i++){
+
+    const sx=x+rnd()*w;
+    const sy=y+rnd()*h;
+
+    const len=45+rnd()*260;
+    const ang=-1.2+rnd()*2.4;
 
     ctx.beginPath();
     ctx.moveTo(sx,sy);
 
-    let length=30+Math.random()*190;
-    let angle=(-0.8+Math.random()*1.6);
-
     ctx.lineTo(
-      sx+Math.cos(angle)*length,
-      sy+Math.sin(angle)*length
+      sx+Math.cos(ang)*len,
+      sy+Math.sin(ang)*len
     );
 
-    ctx.strokeStyle=`rgba(245,225,185,${0.12+Math.random()*0.18})`;
-    ctx.lineWidth=0.5+Math.random()*1.2;
+    ctx.strokeStyle=
+      `rgba(255,235,195,${0.12+rnd()*0.22})`;
+
+    ctx.lineWidth=
+      0.45+rnd()*1.15;
+
     ctx.stroke();
   }
 
-  /*
-   * Kleine oude vlekken
-   */
-  for(let i=0;i<35;i++){
-    const px=x+Math.random()*w;
-    const py=y+Math.random()*h;
-    const r=1+Math.random()*7;
+  /* BARSTJES */
+  for(let i=0;i<11;i++){
+
+    let px=x+rnd()*w;
+    let py=y+rnd()*h;
+
+    ctx.beginPath();
+    ctx.moveTo(px,py);
+
+    const pts=4+Math.floor(rnd()*6);
+
+    for(let j=0;j<pts;j++){
+
+      px+=-18+rnd()*36;
+      py+=14+rnd()*48;
+
+      ctx.lineTo(px,py);
+    }
+
+    ctx.strokeStyle=
+      `rgba(255,235,205,${0.18+rnd()*0.22})`;
+
+    ctx.lineWidth=
+      0.55+rnd()*0.9;
+
+    ctx.stroke();
+
+    /* kleine vertakkingen */
+    const branches=1+Math.floor(rnd()*2);
+
+    for(let b=0;b<branches;b++){
+
+      let bx=px;
+      let by=py;
+
+      ctx.beginPath();
+      ctx.moveTo(bx,by);
+
+      for(let j=0;j<2+Math.floor(rnd()*3);j++){
+
+        bx+=-22+rnd()*44;
+        by+=8+rnd()*28;
+
+        ctx.lineTo(bx,by);
+      }
+
+      ctx.strokeStyle=
+        `rgba(255,235,205,${0.10+rnd()*0.15})`;
+
+      ctx.lineWidth=
+        0.4+rnd()*0.65;
+
+      ctx.stroke();
+    }
+  }
+
+  /* DONKERE BESCHADIGINGEN */
+  ctx.globalCompositeOperation="multiply";
+
+  for(let i=0;i<75;i++){
+
+    const px=x+rnd()*w;
+    const py=y+rnd()*h;
+    const r=0.5+rnd()*4.5;
+
+    ctx.fillStyle=
+      `rgba(50,28,10,${0.08+rnd()*0.15})`;
 
     ctx.beginPath();
     ctx.arc(px,py,r,0,Math.PI*2);
-
-    ctx.fillStyle=`rgba(55,30,12,${0.04+Math.random()*0.10})`;
     ctx.fill();
   }
 
   ctx.restore();
 
-  /*
-   * HET ORIGINELE HALTE PLANTSOEN-FRAME
-   * komt als laatste bovenop de foto.
-   */
+  /* HALTE PLANTSOEN FRAME */
   ctx.drawImage(filter,0,0);
 
   preview.style.display="block";
 }
-
  
 input.addEventListener("change",async()=>{
  const file=input.files && input.files[0];
