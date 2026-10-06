@@ -79,12 +79,6 @@ function drawCover(img,x,y,w,h){
  ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
  ctx.restore();
 }
-ctx.globalCompositeOperation="multiply";
-ctx.fillStyle="rgba(35,18,7,0.18)";
-ctx.fillRect(x,y,18,h);
-ctx.fillRect(x+w-18,y,18,h);
-ctx.fillRect(x,y,w,18);
-ctx.fillRect(x,y+h-18,w,18);
 
 function render(img){
   canvas.width=filter.naturalWidth;
@@ -419,7 +413,13 @@ function render(img){
 
   ctx.restore();
 
-
+ctx.globalCompositeOperation="multiply";
+ctx.fillStyle="rgba(35,18,7,0.18)";
+ctx.fillRect(x,y,18,h);
+ctx.fillRect(x+w-18,y,18,h);
+ctx.fillRect(x,y,w,18);
+ctx.fillRect(x,y+h-18,w,18);
+ 
   /*
    * HET BESTAANDE HALTE PLANTSOEN-FRAME
    * blijft helemaal bovenop liggen.
