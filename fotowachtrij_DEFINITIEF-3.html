@@ -504,7 +504,7 @@ const data=canvas.toDataURL("image/jpeg",0.94);
 const items=JSON.parse(localStorage.getItem("haltePlantsoenQueue")||"[]");
 items.unshift({id:Date.now(),data});
 localStorage.setItem("haltePlantsoenQueue",JSON.stringify(items));
-
+renderQueue();
 const {error}=await sb.from("Photos").insert({
   data:data,
   published:false
