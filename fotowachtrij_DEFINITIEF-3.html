@@ -496,15 +496,28 @@ input.addEventListener("change",async()=>{
  }
 });
 
-document.getElementById("queue").onclick=()=>{
- if(!selected)return;
+document.getElementById("queue").onclick=async()=>{
+if(!selected)return;
 
- const data=canvas.toDataURL("image/jpeg",0.94);
- const items=JSON.parse(localStorage.getItem("haltePlantsoenQueue")||"[]");
- items.unshift({id:Date.now(),data});
- localStorage.setItem("haltePlantsoenQueue",JSON.stringify(items));
- renderQueue();
- status.textContent="Foto staat in de wachtrij.";
+const data=canvas.toDataURL("image/jpeg",0.94);
+
+const items=JSON.parse(localStorage.getItem("haltePlantsoenQueue")||"[]");
+items.unshift({id:Date.now(),data});
+localStorage.setItem("haltePlantsoenQueue",JSON.stringify(items));
+
+const {error}=await sb.from("Photos").insert({
+  data:data,
+  published:false
+});
+
+if(error){
+  console.error(error);
+  status.textContent="Foto staat lokaal, maar niet online opgeslagen.";
+  return;
+}
+
+renderQueue();
+status.textContent="Foto staat in de wachtrij.";
 };
 
 function renderQueue(){
