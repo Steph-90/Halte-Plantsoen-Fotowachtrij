@@ -496,7 +496,7 @@ input.addEventListener("change",async()=>{
  }
 });
 
-document.getElementById("queue").onclick=async()=>{
+document.getElementById("queue").onclick=async(e)=>{
 if(!selected)return;
 
 const data=canvas.toDataURL("image/jpeg",0.94);
