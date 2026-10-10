@@ -9,6 +9,24 @@ body{margin:0;background:#17130f;color:#eee7d8;font-family:Georgia,serif}
 main{max-width:900px;margin:auto;padding:18px}
 button,label{display:inline-block;padding:12px 15px;border:1px solid #9b8a68;border-radius:8px;background:#30281d;color:#f3ead8;font:inherit}
 input{display:none}
+ #loginBox input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  background: #eee7d8;
+  color: #17130f;
+}
+
+#loginBox {
+  max-width: 420px;
+  margin: 20px auto;
+}
+
+#loginBox button {
+  width: 100%;
+}
 #preview{display:none;margin-top:15px}
 canvas{width:100%;height:auto;display:block;background:#222}
 #status{margin:14px 0}
@@ -21,6 +39,16 @@ canvas{width:100%;height:auto;display:block;background:#222}
 <body>
 <main>
 <h1>Halte Plantsoen</h1>
+ <div id="loginBox">
+  <h2>Beheerder login</h2>
+  <input id="loginEmail" type="email" placeholder="E-mailadres">
+  <input id="loginPassword" type="password" placeholder="Wachtwoord">
+  <button id="loginButton">INLOGGEN</button>
+  <p id="loginStatus"></p>
+</div>
+
+<div id="adminPanel" hidden>
+  <button id="logoutButton">UITLOGGEN</button>
 <p>Fotowachtrij · 1913 · Halloween 23 oktober 2026</p>
 
 <label for="photo">KIES FOTO</label>
@@ -500,48 +528,87 @@ if(!selected)return;
 
 const data=canvas.toDataURL("image/jpeg",0.94);
 
-const items=JSON.parse(localStorage.getItem("haltePlantsoenQueue")||"[]");
-items.unshift({id:Date.now(),data});
-localStorage.setItem("haltePlantsoenQueue",JSON.stringify(items));
-renderQueue();
-const {error}=await sb.from("Photos").insert({
-  data:data,
-  published:false
-});
-
-if(error){
-  console.error(error);
-  status.textContent="Foto staat lokaal, maar niet online opgeslagen.";
+if (!sb.auth.getSession) {
+  status.textContent = "Login is nog niet ingesteld.";
   return;
 }
 
+const { data: sessionData } = await sb.auth.getSession();
+
+if (!sessionData.session) {
+  status.textContent = "Log eerst in voordat je foto's opslaat.";
+  return;
+}
+
+status.textContent = "Foto wordt opgeslagen...";
+
+const { error } = await sb.from("Photos").insert({
+  data: data,
+  published: false
+});
+
+if (error) {
+  console.error(error);
+  status.textContent = "Opslaan mislukt: " + error.message;
+  return;
+}
+
+status.textContent = "Foto staat online in de wachtrij.";
+ };
 renderQueue();
-status.textContent="Foto staat in de wachtrij.";
-};
+  
+async function renderQueue() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-function renderQueue(){
- const grid=document.getElementById("grid");
- const items=JSON.parse(localStorage.getItem("haltePlantsoenQueue")||"[]");
- grid.innerHTML="";
+  const { data: photos, error } = await sb
+    .from("Photos")
+    .select("id, created_at, data")
+    .eq("published", false)
+    .order("created_at", { ascending: false });
 
- items.forEach(item=>{
-  const card=document.createElement("div");
-  card.className="card";
+  if (error) {
+    status.textContent = "Wachtrij laden mislukt: " + error.message;
+    return;
+  }
 
-  const img=document.createElement("img");
-  img.src=item.data;
+  if (!photos || photos.length === 0) {
+    grid.textContent = "Geen foto's in de wachtrij.";
+    return;
+  }
 
-  const del=document.createElement("button");
-  del.textContent="VERWIJDEREN";
-  del.onclick=()=>{
-   const left=items.filter(x=>x.id!==item.id);
-   localStorage.setItem("haltePlantsoenQueue",JSON.stringify(left));
-   renderQueue();
-  };
+  photos.forEach(photo => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-  card.append(img,del);
-  grid.appendChild(card);
- });
+    const img = document.createElement("img");
+    img.src = photo.data;
+
+    const publish = document.createElement("button");
+    publish.textContent = "PUBLICEREN";
+
+    publish.onclick = async () => {
+      publish.disabled = true;
+
+      const { error } = await sb
+        .from("Photos")
+        .update({ published: true })
+        .eq("id", photo.id);
+
+      if (error) {
+        status.textContent = "Publiceren mislukt: " + error.message;
+        publish.disabled = false;
+        return;
+      }
+
+      status.textContent = "Foto gepubliceerd!";
+      await renderQueue();
+    };
+
+    card.appendChild(img);
+    card.appendChild(publish);
+    grid.appendChild(card);
+  });
 }
 
 renderQueue();
