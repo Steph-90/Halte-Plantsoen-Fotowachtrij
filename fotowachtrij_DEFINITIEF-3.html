@@ -612,42 +612,33 @@ async function renderQueue() {
 }
 
 renderQueue();
-  // BEHEERDER LOGIN
-const loginBox = document.getElementById("loginBox");
-const adminPanel = document.getElementById("adminPanel");
-const loginButton = document.getElementById("loginButton");
-const loginEmail = document.getElementById("loginEmail");
-const loginPassword = document.getElementById("loginPassword");
-const loginStatus = document.getElementById("loginStatus");
-const logoutButton = document.getElementById("logoutButton");
+document.getElementById("loginButton").onclick = async () => {
+  const status = document.getElementById("loginStatus");
+  const button = document.getElementById("loginButton");
 
-loginButton.addEventListener("click", async () => {
-  loginButton.disabled = true;
-  loginStatus.textContent = "Bezig met inloggen…";
+  status.textContent = "Login wordt gestart…";
+  button.disabled = true;
 
-  const { error } = await sb.auth.signInWithPassword({
-    email: loginEmail.value.trim(),
-    password: loginPassword.value
-  });
+  try {
+    const { error } = await sb.auth.signInWithPassword({
+      email: document.getElementById("loginEmail").value.trim(),
+      password: document.getElementById("loginPassword").value
+    });
 
-  loginButton.disabled = false;
+    if (error) {
+      status.textContent = "Loginfout: " + error.message;
+      return;
+    }
 
-  if (error) {
-    loginStatus.textContent = "Inloggen mislukt: controleer je gegevens.";
-    console.error(error);
-    return;
+    document.getElementById("loginBox").hidden = true;
+    document.getElementById("adminPanel").hidden = false;
+    status.textContent = "";
+  } catch (error) {
+    status.textContent = "Verbindingsfout: " + error.message;
+  } finally {
+    button.disabled = false;
   }
-
-  loginBox.hidden = true;
-  adminPanel.hidden = false;
-});
-
-logoutButton.addEventListener("click", async () => {
-  await sb.auth.signOut();
-  adminPanel.hidden = true;
-  loginBox.hidden = false;
-  loginPassword.value = "";
-});
+};
 </script>
 </body>
 </html>
