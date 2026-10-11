@@ -612,6 +612,42 @@ async function renderQueue() {
 }
 
 renderQueue();
+  // BEHEERDER LOGIN
+const loginBox = document.getElementById("loginBox");
+const adminPanel = document.getElementById("adminPanel");
+const loginButton = document.getElementById("loginButton");
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+const loginStatus = document.getElementById("loginStatus");
+const logoutButton = document.getElementById("logoutButton");
+
+loginButton.addEventListener("click", async () => {
+  loginButton.disabled = true;
+  loginStatus.textContent = "Bezig met inloggen…";
+
+  const { error } = await sb.auth.signInWithPassword({
+    email: loginEmail.value.trim(),
+    password: loginPassword.value
+  });
+
+  loginButton.disabled = false;
+
+  if (error) {
+    loginStatus.textContent = "Inloggen mislukt: controleer je gegevens.";
+    console.error(error);
+    return;
+  }
+
+  loginBox.hidden = true;
+  adminPanel.hidden = false;
+});
+
+logoutButton.addEventListener("click", async () => {
+  await sb.auth.signOut();
+  adminPanel.hidden = true;
+  loginBox.hidden = false;
+  loginPassword.value = "";
+});
 </script>
 </body>
 </html>
