@@ -75,6 +75,28 @@ const OPEN={left:31,top:36,right:1505,bottom:928};
 const SUPABASE_URL = "https://fbhbiaopdzgvcitgxygs.supabase.co";
 const SUPABASE_KEY = "sb_publishable__K-mtaFvg-ii4YXiSOVWqQ_M4ILBhVX";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  document.getElementById("loginButton").onclick = async () => {
+  const status = document.getElementById("loginStatus");
+  status.textContent = "Bezig met inloggen…";
+
+  try {
+    const { error } = await sb.auth.signInWithPassword({
+      email: document.getElementById("loginEmail").value.trim(),
+      password: document.getElementById("loginPassword").value
+    });
+
+    if (error) {
+      status.textContent = "Fout: " + error.message;
+      return;
+    }
+
+    document.getElementById("loginBox").hidden = true;
+    document.getElementById("adminPanel").hidden = false;
+  } catch (e) {
+    status.textContent = "Fout: " + e.message;
+  }
+};
 
 const input=document.getElementById("photo");
   
@@ -612,33 +634,7 @@ async function renderQueue() {
 }
 
 renderQueue();
-document.getElementById("loginButton").onclick = async () => {
-  const status = document.getElementById("loginStatus");
-  const button = document.getElementById("loginButton");
 
-  status.textContent = "Login wordt gestart…";
-  button.disabled = true;
-
-  try {
-    const { error } = await sb.auth.signInWithPassword({
-      email: document.getElementById("loginEmail").value.trim(),
-      password: document.getElementById("loginPassword").value
-    });
-
-    if (error) {
-      status.textContent = "Loginfout: " + error.message;
-      return;
-    }
-
-    document.getElementById("loginBox").hidden = true;
-    document.getElementById("adminPanel").hidden = false;
-    status.textContent = "";
-  } catch (error) {
-    status.textContent = "Verbindingsfout: " + error.message;
-  } finally {
-    button.disabled = false;
-  }
-};
 </script>
 </body>
 </html>
