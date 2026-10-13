@@ -608,6 +608,26 @@ async function renderQueue() {
 
     const publish = document.createElement("button");
     publish.textContent = "PUBLICEREN";
+   
+const del = document.createElement("button");
+del.textContent = "VERWIJDEREN";
+
+del.onclick = async () => {
+  if (!confirm("Weet je zeker dat je deze foto wilt verwijderen?")) return;
+
+  const { error } = await sb
+    .from("Photos")
+    .delete()
+    .eq("id", photo.id);
+
+  if (error) {
+    status.textContent = "Verwijderen mislukt: " + error.message;
+    return;
+  }
+
+  status.textContent = "Foto verwijderd.";
+  await renderQueue();
+};
 
     publish.onclick = async () => {
       publish.disabled = true;
@@ -627,9 +647,10 @@ async function renderQueue() {
       await renderQueue();
     };
 
-    card.appendChild(img);
-    card.appendChild(publish);
-    grid.appendChild(card);
+ card.appendChild(img);
+card.appendChild(publish);
+card.appendChild(del);
+grid.appendChild(card);
   });
 }
 
