@@ -582,9 +582,10 @@ if (error) {
 }
 
 status.textContent = "Foto staat online in de wachtrij.";
- };
 await renderQueue();
-  
+});
+renderQueue();
+
 async function renderQueue() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
