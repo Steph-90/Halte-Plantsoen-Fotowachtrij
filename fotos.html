@@ -516,7 +516,10 @@ async function loadPublishedPhotos() {
   showGallery();
 }
 
-loadPublishedPhotos();
+loadPublishedPhotos().catch(error => {
+  console.error("Fout bij laden galerij:", error);
+  gallery.innerHTML = "<p>De foto's konden niet worden geladen.</p>";
+});
 
 </script>
 </body>
