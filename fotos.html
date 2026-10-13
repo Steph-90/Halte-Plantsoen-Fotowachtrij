@@ -446,7 +446,13 @@ const largePhoto=document.getElementById("largePhoto");
 const close=document.getElementById("close");
 
 /* De koppeling met de goedgekeurde online foto's volgt apart. */
-const publishedPhotos=[];
+
+const SUPABASE_URL = "https://fbhbiaopdzgvcitqxygs.supabase.co";
+const SUPABASE_KEY = "sb_publishable__K-mtaFvg-ii4YXiSOVWqQ_M4ILBhVX";
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let publishedPhotos = [];
+
 
 function showGallery(){
   gallery.innerHTML="";
