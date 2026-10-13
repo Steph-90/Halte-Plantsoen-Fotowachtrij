@@ -74,7 +74,13 @@ const OPEN={left:31,top:36,right:1505,bottom:928};
 
 const SUPABASE_URL = "https://fbhbiaopdzgvcitgxygs.supabase.co";
 const SUPABASE_KEY = "sb_publishable__K-mtaFvg-ii4YXiSOVWqQ_M4ILBhVX";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
   
   document.getElementById("loginButton").onclick = async () => {
   const status = document.getElementById("loginStatus");
