@@ -499,7 +499,25 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape")closeViewer();
 });
 
-showGallery();
+
+async function loadPublishedPhotos() {
+  const { data, error } = await sb
+    .from("Photos")
+    .select("data")
+    .eq("published", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Galerij laden mislukt:", error);
+    return;
+  }
+
+  publishedPhotos = data.map(photo => photo.data);
+  showGallery();
+}
+
+loadPublishedPhotos();
+
 </script>
 </body>
 </html>
