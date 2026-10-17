@@ -287,12 +287,12 @@ function render(img){
   ctx.globalCompositeOperation="screen";
   ctx.lineCap="round";
 
-  for(let i=0;i<42;i++){
+  for(let i=0;i<24;i++){
 
     let sx=x+rnd()*w;
     let sy=y+rnd()*h;
 
-    const len=45+rnd()*300;
+    const len=12+rnd()*110;
     const angle=-1.25+rnd()*2.5;
 
     ctx.beginPath();
@@ -304,10 +304,10 @@ function render(img){
     );
 
    ctx.strokeStyle=
-  `rgba(255,225,185,${0.25+rnd()*0.35})`;
+  `rgba(190,155,110,${0.04+rnd()*0.08})`;
 
 ctx.lineWidth=
-  0.7+rnd()*1.5;
+ 0.25+rnd()*0.45;
 
     ctx.stroke();
   }
