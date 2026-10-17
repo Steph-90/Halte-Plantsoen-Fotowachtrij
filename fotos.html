@@ -294,9 +294,19 @@ h1{
   display: none;
 }
 
+
 #gallery.show-all {
-  display: grid;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
 }
+
+@media (max-width: 600px) {
+    #gallery.show-all {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 
 .empty{
   grid-column:1/-1;
