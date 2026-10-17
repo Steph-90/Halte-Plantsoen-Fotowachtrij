@@ -164,6 +164,12 @@ function render(img){
   ctx.beginPath();
   ctx.rect(x,y,w,h);
   ctx.clip();
+ let seed = 1913;
+
+const rnd = () => {
+  seed = (seed * 1664525 + 1013904223) >>> 0;
+  return seed / 4294967296;
+};
    // Originele foto tekenen
   ctx.filter =
     "sepia(0.28) " +
