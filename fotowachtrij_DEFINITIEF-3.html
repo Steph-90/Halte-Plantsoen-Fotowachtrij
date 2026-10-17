@@ -396,15 +396,29 @@ input.addEventListener("change",async()=>{
  status.textContent="Foto wordt geladen…";
 
  try{
-  await new Promise((resolve,reject)=>{
-   if(filterReady) resolve();
-   else {
-    const timer=setInterval(()=>{
-     if(filterReady){clearInterval(timer);resolve();}
-    },50);
-    setTimeout(()=>{clearInterval(timer);reject();},10000);
-   }
-  });
+
+    await new Promise((resolve,reject)=>{
+      if(filterReady || (filter.complete && filter.naturalWidth > 0)){
+        filterReady=true;
+        resolve();
+        return;
+      }
+
+      const timer=setInterval(()=>{
+        if(filterReady || (filter.complete && filter.naturalWidth > 0)){
+          clearInterval(timer);
+          clearTimeout(timeout);
+          filterReady=true;
+          resolve();
+        }
+      },50);
+
+      const timeout=setTimeout(()=>{
+        clearInterval(timer);
+        reject(new Error("Filter kon niet worden geladen."));
+      },10000);
+    });
+
 
   selected=await loadImage(file);
   render(selected);
