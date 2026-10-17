@@ -284,91 +284,32 @@ function render(img){
   /*
    * DUIDELIJKE KRASSEN
    */
-  ctx.globalCompositeOperation="screen";
-  ctx.lineCap="round";
+ /* VERWEERDE FOTO - FIJNE CRAQUELÉ */
 
-  for(let i=0;i<24;i++){
+ctx.globalCompositeOperation="multiply";
 
-    let sx=x+rnd()*w;
-    let sy=y+rnd()*h;
+for(let i=0;i<150;i++){
 
-    const len=12+rnd()*110;
-    const angle=-1.25+rnd()*2.5;
+  let px=x+rnd()*w;
+  let py=y+rnd()*h;
+  let len=3+rnd()*16;
+  let angle=rnd()*Math.PI*2;
 
-    ctx.beginPath();
-    ctx.moveTo(sx,sy);
+  ctx.beginPath();
+  ctx.moveTo(px,py);
 
-    ctx.lineTo(
-      sx+Math.cos(angle)*len,
-      sy+Math.sin(angle)*len
-    );
-
-   ctx.strokeStyle=
-  `rgba(190,155,110,${0.04+rnd()*0.08})`;
-
-ctx.lineWidth=
- 0.25+rnd()*0.45;
-
-    ctx.stroke();
+  for(let j=0;j<3;j++){
+    px+=Math.cos(angle+(rnd()-0.5)*0.8)*len/3;
+    py+=Math.sin(angle+(rnd()-0.5)*0.8)*len/3;
+    ctx.lineTo(px,py);
   }
 
+  ctx.strokeStyle=
+    `rgba(75,48,28,${0.025+rnd()*0.055})`;
 
-  /*
-   * GROTERE BARSTEN
-   */
-  for(let i=0;i<7;i++){
-
-    let px=x+rnd()*w;
-    let py=y+rnd()*h;
-
-    ctx.beginPath();
-    ctx.moveTo(px,py);
-
-    const points=3+Math.floor(rnd()*4);
-
-    for(let j=0;j<points;j++){
-
-      px+=-8+rnd()*16;
-py+=5+rnd()*16;
-
-      ctx.lineTo(px,py);
-    }
-
-   ctx.strokeStyle=
-  `rgba(95,65,38,${0.08+rnd()*0.10})`;
-
-    ctx.lineWidth=
-     0.3+rnd()*0.45;
-
-    ctx.stroke();
-
-
-    /*
-     * Zijtakken van de barst
-     */
-    if(rnd()>0.35){
-
-      let bx=px;
-      let by=py;
-
-      ctx.beginPath();
-      ctx.moveTo(bx,by);
-
-      for(let j=0;j<3;j++){
-
-        bx+=-35+rnd()*70;
-        by+=8+rnd()*30;
-
-        ctx.lineTo(bx,by);
-      }
-
-      ctx.strokeStyle=
-        `rgba(255,235,205,${0.12+rnd()*0.18})`;
-
-      ctx.lineWidth=0.5+rnd()*0.7;
-      ctx.stroke();
-    }
-  }
+  ctx.lineWidth=0.25+rnd()*0.4;
+  ctx.stroke();
+}
 
 
   /*
