@@ -235,6 +235,61 @@ h1{
   overflow-wrap:anywhere;
 }
 
+  
+.slideshow {
+  margin: 20px 0;
+  padding: 12px;
+  background: #e8d4a8;
+  border: 1px solid #967346;
+  box-shadow: 2px 3px 5px #4b321c66;
+  text-align: center;
+}
+
+.slide-image {
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-image img {
+  display: block;
+  max-width: 100%;
+  max-height: 420px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  cursor: pointer;
+  border: 1px solid #8a6b40;
+}
+
+.slide-controls,
+.archive-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.slide-controls button,
+.archive-toggle button {
+  padding: 10px 16px;
+  background: #302015;
+  color: #f0dfb8;
+  border: 1px solid #967346;
+  font: inherit;
+  cursor: pointer;
+}
+
+#gallery {
+  display: none;
+}
+
+#gallery.show-all {
+  display: grid;
+}
+
 .empty{
   grid-column:1/-1;
   padding:28px 16px;
@@ -395,12 +450,29 @@ h1{
     <p>Teruggevonden portretten uit het archief van Halte Plantsoen</p>
   </section>
 
-  <div class="gallery" id="gallery">
-    <div class="empty">
-      <strong>Het fotoarchief is nog leeg</strong>
-      De eerste portretten verschijnen hier zodra ze zijn gepubliceerd.
-    </div>
+  
+<div class="slideshow" id="photoSlideshow">
+  <div class="slide-image" id="slideImage">
+    Het fotoarchief wordt geladen...
   </div>
+  <div class="slide-controls">
+    <button id="prevSlide" type="button">← Vorige</button>
+    <span id="slideCounter"></span>
+    <button id="nextSlide" type="button">Volgende →</button>
+  </div>
+</div>
+
+<div class="archive-toggle">
+  <button id="toggleArchive" type="button">BEKIJK ALLE FOTO'S</button>
+</div>
+
+<div class="gallery" id="gallery">
+  <div class="empty">
+    <strong>Het fotoarchief is nog leeg</strong>
+    De eerste portretten verschijnen hier zodra ze zijn gepubliceerd.
+  </div>
+</div>
+
 
   <section class="notice">
     <div class="article-label">Waarschuwing aan de reiziger</div>
@@ -486,6 +558,55 @@ function showGallery(){
   });
 }
 
+let currentSlide = 0;
+
+function renderSlideshow() {
+  const slideImage = document.getElementById("slideImage");
+  const slideCounter = document.getElementById("slideCounter");
+
+  if (!publishedPhotos.length) {
+    slideImage.textContent = "Er zijn nog geen gepubliceerde foto's.";
+    slideCounter.textContent = "";
+    return;
+  }
+
+  currentSlide =
+    (currentSlide + publishedPhotos.length) % publishedPhotos.length;
+
+  const img = document.createElement("img");
+  img.src = publishedPhotos[currentSlide];
+  img.alt = "Gepubliceerd archiefportret";
+  img.onclick = () => {
+    largePhoto.src = publishedPhotos[currentSlide];
+    viewer.classList.add("open");
+  };
+
+  slideImage.replaceChildren(img);
+  slideCounter.textContent =
+    (currentSlide + 1) + " / " + publishedPhotos.length;
+}
+
+document.getElementById("prevSlide").onclick = () => {
+  currentSlide--;
+  renderSlideshow();
+};
+
+document.getElementById("nextSlide").onclick = () => {
+  currentSlide++;
+  renderSlideshow();
+};
+
+document.getElementById("toggleArchive").onclick = () => {
+  const gallery = document.getElementById("gallery");
+  const button = document.getElementById("toggleArchive");
+  const isOpen = gallery.classList.toggle("show-all");
+
+  button.textContent = isOpen
+    ? "VERBERG FOTOARCHIEF"
+    : "BEKIJK ALLE FOTO'S";
+};
+
+  
 function closeViewer(){
   viewer.classList.remove("open");
   largePhoto.src="";
@@ -514,6 +635,7 @@ async function loadPublishedPhotos() {
 
   publishedPhotos = data.map(photo => photo.data);
   showGallery();
+  renderSlideshow();
 }
 
 loadPublishedPhotos().catch(error => {
