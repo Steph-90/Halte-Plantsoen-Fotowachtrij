@@ -360,20 +360,14 @@ function render(img){
     ctx.fill();
   }
 
-  // Herstel de canvasinstellingen en leg het bestaande frame terug.
+    // Herstel de canvasinstellingen.
   ctx.restore();
-  ctx.drawImage(filter,0,0);
 
- 
-  /*
-   * HET BESTAANDE HALTE PLANTSOEN-FRAME
-   * blijft helemaal bovenop liggen.
-   */
+  // Leg het bestaande Halte Plantsoen-frame terug.
   ctx.drawImage(filter,0,0);
 
   preview.style.display="block";
 }
-
 
 
 input.addEventListener("change",async()=>{
