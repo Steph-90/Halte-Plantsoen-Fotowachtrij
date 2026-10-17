@@ -423,9 +423,12 @@ input.addEventListener("change",async()=>{
   selected=await loadImage(file);
   render(selected);
   status.textContent="Foto klaar.";
- }catch(e){
-  status.textContent="De foto kon niet worden geopend.";
- }
+ 
+}catch(e){
+  console.error("Foto-fout:",e);
+  status.textContent="Fout: "+(e.message || e);
+}
+
 });
 
 document.getElementById("queue").onclick=async(e)=>{
