@@ -236,7 +236,7 @@ const rnd = () => {
   ctx.lineCap="round";
   ctx.lineJoin="round";
 
-  for(let i=0;i<42;i++){
+  for(let i=0;i<55;i++){
     let px,py;
 
     // Ongeveer driekwart bij de randen,
@@ -262,20 +262,20 @@ const rnd = () => {
       py=y+rnd()*h;
     }
 
-    const len=5+rnd()*15;
+    const len=18+rnd()*30;
     const angle=rnd()*Math.PI*2;
 
     ctx.beginPath();
     ctx.moveTo(px,py);
 
-    for(let j=0;j<3;j++){
+    for(let j=0;j<4;j++){
       px+=Math.cos(angle+(rnd()-0.5)*0.9)*len/3;
       py+=Math.sin(angle+(rnd()-0.5)*0.9)*len/3;
       ctx.lineTo(px,py);
     }
 
-    ctx.strokeStyle=`rgba(58,35,20,${0.035+rnd()*0.07})`;
-    ctx.lineWidth=0.3+rnd()*0.35;
+    ctx.strokeStyle=`rgba(58,35,20,${0.16+rnd()*0.20})`;
+    ctx.lineWidth=1+rnd()*1.2;
     ctx.stroke();
   }
 
