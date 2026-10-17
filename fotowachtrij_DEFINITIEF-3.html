@@ -283,7 +283,7 @@ const rnd = () => {
    * ENKELE FIJNE KRASSEN
    * Kort, dun en niet als lange lijnen door de foto.
    */
-  for(let i=0;i<12;i++){
+  for(let i=0;i<28;i++){
     let px,py;
     const side=Math.floor(rnd()*4);
 
@@ -301,7 +301,7 @@ const rnd = () => {
       py=y+rnd()*h;
     }
 
-    const len=8+rnd()*24;
+    const len=16+rnd()*32;
     const angle=rnd()*Math.PI*2;
 
     ctx.beginPath();
@@ -311,8 +311,8 @@ const rnd = () => {
       py+Math.sin(angle)*len
     );
 
-    ctx.strokeStyle=`rgba(42,26,15,${0.07+rnd()*0.09})`;
-    ctx.lineWidth=0.35+rnd()*0.35;
+    ctx.strokeStyle=`rgba(42,26,15,${0.18+rnd()*0.20})`;
+    ctx.lineWidth=0.8+rnd()*1.2;
     ctx.stroke();
   }
 
