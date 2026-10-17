@@ -165,289 +165,205 @@ function render(img){
   ctx.rect(x,y,w,h);
   ctx.clip();
 
+  
   /*
-   * OUDE FOTO
-   * Meer originele kleur behouden.
-   */
-  ctx.filter=
-  "sepia(0.28) " +
-  "saturate(0.82) " +
-  "contrast(1.04) " +
-  "brightness(1.10)"; 
-
-  ctx.drawImage(img,dx,dy,dw,dh);
-
-  ctx.filter="none";
-
-
-  /*
-   * WARME VERKLEURING
-   */
-  ctx.globalCompositeOperation="multiply";
-  ctx.fillStyle="rgba(105,70,38,0.09)";
-  ctx.fillRect(x,y,w,h);
-
-
-  /*
-   * DONKERE OUDE HOEKEN
-   */
-  const vignette=ctx.createRadialGradient(
-    x+w/2,
-    y+h/2,
-    Math.min(w,h)*0.27,
-    x+w/2,
-    y+h/2,
-    Math.max(w,h)*0.72
-  );
-
-  vignette.addColorStop(0,"rgba(0,0,0,0)");
-  vignette.addColorStop(0.62,"rgba(20,12,7,0.05)");
-  vignette.addColorStop(0.82,"rgba(20,12,7,0.16)");
-  vignette.addColorStop(1,"rgba(0,0,0,0.48)");
-
-  ctx.fillStyle=vignette;
-  ctx.fillRect(x,y,w,h);
-
-
-  /*
-   * VASTE RANDOM
-   * Hierdoor blijven de beschadigingen hetzelfde
-   * wanneer de foto opnieuw wordt getekend.
-   */
-  let seed=1913;
-
-  const rnd=()=>{
-    seed=(seed*1664525+1013904223)>>>0;
-    return seed/4294967296;
-  };
-
-
-  /*
-   * OUDE VLEKKEN
+   * OUDE VLEKKEN - subtiel en onregelmatig
    */
   ctx.globalCompositeOperation="multiply";
 
-  for(let i=0;i<70;i++){
-
+  for(let i=0;i<38;i++){
     const px=x+rnd()*w;
     const py=y+rnd()*h;
-    const r=3+rnd()*30;
+    const r=4+rnd()*22;
 
-    const stain=ctx.createRadialGradient(
-      px,py,0,
-      px,py,r
-    );
-
-    stain.addColorStop(
-      0,
-      `rgba(55,28,10,${0.06+rnd()*0.14})`
-    );
-
-    stain.addColorStop(
-      0.65,
-      `rgba(75,40,15,${0.025+rnd()*0.08})`
-    );
-
-    stain.addColorStop(
-      1,
-      "rgba(75,40,15,0)"
-    );
+    const stain=ctx.createRadialGradient(px,py,0,px,py,r);
+    stain.addColorStop(0,`rgba(55,28,10,${0.035+rnd()*0.07})`);
+    stain.addColorStop(0.65,"rgba(75,40,15,0.025)");
+    stain.addColorStop(1,"rgba(75,40,15,0)");
 
     ctx.fillStyle=stain;
-
     ctx.beginPath();
     ctx.arc(px,py,r,0,Math.PI*2);
     ctx.fill();
   }
 
-
   /*
-   * PAPIERKORREL
+   * FIJNE OUDE FILMKORREL
    */
   ctx.globalCompositeOperation="overlay";
 
-  for(let i=0;i<2200;i++){
-
+  for(let i=0;i<1400;i++){
     const px=x+rnd()*w;
     const py=y+rnd()*h;
-    const s=0.4+rnd()*1.8;
+    const s=0.4+rnd()*1.2;
 
-    ctx.fillStyle=
-      rnd()>0.48
-      ? `rgba(255,235,190,${0.025+rnd()*0.075})`
-      : `rgba(10,7,4,${0.025+rnd()*0.075})`;
+    ctx.fillStyle=rnd()>0.5
+      ? `rgba(255,235,190,${0.015+rnd()*0.035})`
+      : `rgba(10,7,4,${0.015+rnd()*0.035})`;
 
     ctx.fillRect(px,py,s,s);
   }
 
-
   /*
-   * DUIDELIJKE KRASSEN
-   */
- /* VERWEERDE FOTO - FIJNE CRAQUELÉ */
-
-ctx.globalCompositeOperation="multiply";
-
-for(let i=0;i<150;i++){
-
-  let px=x+rnd()*w;
-  let py=y+rnd()*h;
-  let len=3+rnd()*16;
-  let angle=rnd()*Math.PI*2;
-
-  ctx.beginPath();
-  ctx.moveTo(px,py);
-
-  for(let j=0;j<3;j++){
-    px+=Math.cos(angle+(rnd()-0.5)*0.8)*len/3;
-    py+=Math.sin(angle+(rnd()-0.5)*0.8)*len/3;
-    ctx.lineTo(px,py);
-  }
-
-  ctx.strokeStyle=
-    `rgba(75,48,28,${0.025+rnd()*0.055})`;
-
-  ctx.lineWidth=0.25+rnd()*0.4;
-  ctx.stroke();
-}
-
-
-  /*
-   * DONKERE SCHEURTJES / BESCHADIGINGEN
+   * FIJNE CRAQUELÉ - korte, onregelmatige haarscheurtjes
+   * Minder lijnen en veel minder opvallend dan voorheen.
    */
   ctx.globalCompositeOperation="multiply";
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
 
-  for(let i=0;i<90;i++){
+  for(let i=0;i<42;i++){
+    let px,py;
 
-    const px=x+rnd()*w;
-    const py=y+rnd()*h;
-    const r=0.7+rnd()*5;
+    // Ongeveer driekwart bij de randen,
+    // de rest verspreid over de foto.
+    if(rnd()<0.75){
+      const side=Math.floor(rnd()*4);
 
-    ctx.fillStyle=
-      `rgba(45,23,8,${0.10+rnd()*0.18})`;
+      if(side===0){
+        px=x+rnd()*w;
+        py=y+rnd()*h*0.12;
+      }else if(side===1){
+        px=x+rnd()*w;
+        py=y+h-rnd()*h*0.12;
+      }else if(side===2){
+        px=x+rnd()*w*0.10;
+        py=y+rnd()*h;
+      }else{
+        px=x+w-rnd()*w*0.10;
+        py=y+rnd()*h;
+      }
+    }else{
+      px=x+rnd()*w;
+      py=y+rnd()*h;
+    }
+
+    const len=5+rnd()*15;
+    const angle=rnd()*Math.PI*2;
 
     ctx.beginPath();
-    ctx.arc(px,py,r,0,Math.PI*2);
-    ctx.fill();
+    ctx.moveTo(px,py);
+
+    for(let j=0;j<3;j++){
+      px+=Math.cos(angle+(rnd()-0.5)*0.9)*len/3;
+      py+=Math.sin(angle+(rnd()-0.5)*0.9)*len/3;
+      ctx.lineTo(px,py);
+    }
+
+    ctx.strokeStyle=`rgba(58,35,20,${0.035+rnd()*0.07})`;
+    ctx.lineWidth=0.3+rnd()*0.35;
+    ctx.stroke();
   }
 
-
   /*
-   * ------------------------------------------------------------
-   * BESCHADIGDE RAND VAN DE FOTO
-   * ------------------------------------------------------------
+   * ENKELE FIJNE KRASSEN
+   * Kort, dun en niet als lange lijnen door de foto.
    */
-
-  ctx.globalCompositeOperation="multiply";
-
-  /*
-   * Ongelijke donkere rand
-   */
-  ctx.lineWidth=3;
-
-  for(let i=0;i<55;i++){
-
+  for(let i=0;i<12;i++){
+    let px,py;
     const side=Math.floor(rnd()*4);
 
+    if(side===0){
+      px=x+rnd()*w;
+      py=y+rnd()*h*0.16;
+    }else if(side===1){
+      px=x+rnd()*w;
+      py=y+h-rnd()*h*0.16;
+    }else if(side===2){
+      px=x+rnd()*w*0.12;
+      py=y+rnd()*h;
+    }else{
+      px=x+w-rnd()*w*0.12;
+      py=y+rnd()*h;
+    }
+
+    const len=8+rnd()*24;
+    const angle=rnd()*Math.PI*2;
+
+    ctx.beginPath();
+    ctx.moveTo(px,py);
+    ctx.lineTo(
+      px+Math.cos(angle)*len,
+      py+Math.sin(angle)*len
+    );
+
+    ctx.strokeStyle=`rgba(42,26,15,${0.07+rnd()*0.09})`;
+    ctx.lineWidth=0.35+rnd()*0.35;
+    ctx.stroke();
+  }
+
+  /*
+   * ECHTE RANDSLIJTAGE
+   * Donkere, onregelmatige plekjes aan de buitenrand.
+   */
+  ctx.globalCompositeOperation="multiply";
+
+  for(let i=0;i<100;i++){
+    const side=Math.floor(rnd()*4);
     let px,py;
 
     if(side===0){
       px=x+rnd()*w;
-      py=y+rnd()*18;
+      py=y+rnd()*h*0.045;
     }else if(side===1){
-      px=x+w-rnd()*18;
-      py=y+rnd()*h;
-    }else if(side===2){
       px=x+rnd()*w;
-      py=y+h-rnd()*18;
+      py=y+h-rnd()*h*0.045;
+    }else if(side===2){
+      px=x+rnd()*w*0.035;
+      py=y+rnd()*h;
     }else{
-      px=x+rnd()*18;
+      px=x+w-rnd()*w*0.035;
       py=y+rnd()*h;
     }
 
-    const r=2+rnd()*12;
+    const rx=1+rnd()*7;
+    const ry=1+rnd()*4;
 
-    ctx.fillStyle=
-      `rgba(45,24,9,${0.12+rnd()*0.22})`;
-
+    ctx.fillStyle=`rgba(42,22,9,${0.12+rnd()*0.24})`;
     ctx.beginPath();
-    ctx.arc(px,py,r,0,Math.PI*2);
+    ctx.ellipse(px,py,rx,ry,rnd()*Math.PI,0,Math.PI*2);
     ctx.fill();
   }
 
-
   /*
-   * Afgesleten lichte stukjes langs de rand
+   * LICHTE, AFGELEEFDE RANDPLEKJES
    */
   ctx.globalCompositeOperation="screen";
 
   for(let i=0;i<45;i++){
-
     const side=Math.floor(rnd()*4);
-
     let px,py;
 
     if(side===0){
       px=x+rnd()*w;
-      py=y+rnd()*12;
+      py=y+rnd()*h*0.025;
     }else if(side===1){
-      px=x+w-rnd()*12;
-      py=y+rnd()*h;
-    }else if(side===2){
       px=x+rnd()*w;
-      py=y+h-rnd()*12;
+      py=y+h-rnd()*h*0.025;
+    }else if(side===2){
+      px=x+rnd()*w*0.02;
+      py=y+rnd()*h;
     }else{
-      px=x+rnd()*12;
+      px=x+w-rnd()*w*0.02;
       py=y+rnd()*h;
     }
 
-    ctx.fillStyle=
-      `rgba(235,205,155,${0.12+rnd()*0.18})`;
-
+    ctx.fillStyle=`rgba(235,199,145,${0.06+rnd()*0.13})`;
     ctx.beginPath();
-    ctx.arc(px,py,1+rnd()*5,0,Math.PI*2);
+    ctx.ellipse(
+      px,py,
+      1+rnd()*4,
+      0.7+rnd()*2.5,
+      rnd()*Math.PI,
+      0,Math.PI*2
+    );
     ctx.fill();
   }
 
+  // Herstel de canvasinstellingen en leg het bestaande frame terug.
   ctx.restore();
+  ctx.drawImage(filter,0,0);
 
-ctx.globalCompositeOperation="multiply";
-ctx.fillStyle="rgba(35,18,7,0.18)";
-ctx.fillRect(x,y,18,h);
-ctx.fillRect(x+w-18,y,18,h);
-ctx.fillRect(x,y,w,18);
-ctx.fillRect(x,y+h-18,w,18);
-
-/* VERWEERDE FOTO-RAND */
-ctx.globalCompositeOperation="multiply";
-
-for(let i=0;i<55;i++){
-
-  const side=Math.floor(rnd()*4);
-  const r=3+rnd()*14;
-
-  let px,py;
-
-  if(side===0){
-    px=x+rnd()*w;
-    py=y+rnd()*20;
-  }else if(side===1){
-    px=x+w-rnd()*20;
-    py=y+rnd()*h;
-  }else if(side===2){
-    px=x+rnd()*w;
-    py=y+h-rnd()*20;
-  }else{
-    px=x+rnd()*20;
-    py=y+rnd()*h;
-  }
-
-  ctx.fillStyle=`rgba(55,30,12,${0.12+rnd()*0.22})`;
-
-  ctx.beginPath();
-  ctx.arc(px,py,r,0,Math.PI*2);
-  ctx.fill();
-}
  
   /*
    * HET BESTAANDE HALTE PLANTSOEN-FRAME
