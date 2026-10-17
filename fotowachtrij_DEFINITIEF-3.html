@@ -316,7 +316,7 @@ ctx.lineWidth=
   /*
    * GROTERE BARSTEN
    */
-  for(let i=0;i<15;i++){
+  for(let i=0;i<7;i++){
 
     let px=x+rnd()*w;
     let py=y+rnd()*h;
@@ -324,21 +324,21 @@ ctx.lineWidth=
     ctx.beginPath();
     ctx.moveTo(px,py);
 
-    const points=5+Math.floor(rnd()*7);
+    const points=3+Math.floor(rnd()*4);
 
     for(let j=0;j<points;j++){
 
-      px+=-22+rnd()*44;
-      py+=12+rnd()*52;
+      px+=-8+rnd()*16;
+py+=5+rnd()*16;
 
       ctx.lineTo(px,py);
     }
 
-    ctx.strokeStyle=
-      `rgba(255,235,205,${0.20+rnd()*0.22})`;
+   ctx.strokeStyle=
+  `rgba(95,65,38,${0.08+rnd()*0.10})`;
 
     ctx.lineWidth=
-      0.55+rnd()*1.0;
+     0.3+rnd()*0.45;
 
     ctx.stroke();
 
