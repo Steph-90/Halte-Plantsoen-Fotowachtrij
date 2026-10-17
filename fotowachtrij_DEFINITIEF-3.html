@@ -172,10 +172,10 @@ const rnd = () => {
 };
    // Originele foto tekenen
   ctx.filter =
-    "sepia(0.28) " +
-    "saturate(0.82) " +
-    "contrast(1.04) " +
-    "brightness(1.10)";
+     "sepia(0.48) " +
+  "saturate(0.68) " +
+  "contrast(1.08) " +
+  "brightness(0.94)";
 
   ctx.drawImage(img, dx, dy, dw, dh);
 
@@ -183,7 +183,7 @@ const rnd = () => {
 
   // Subtiele warme verkleuring
   ctx.globalCompositeOperation = "multiply";
-  ctx.fillStyle = "rgba(105,70,38,0.09)";
+  ctx.fillStyle = "rgba(105,70,38,0.17)";
   ctx.fillRect(x, y, w, h);
 
   // Terug naar de normale tekenmodus
