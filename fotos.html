@@ -395,6 +395,58 @@ h1{
   .side-article p{font-size:13px}
   .right-column{display:block}
 }
+
+  
+/* Fotoarchief als popup over de krant */
+#gallery.show-all {
+  position: fixed;
+  inset: 5vh 5vw;
+  z-index: 9998;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: start;
+  justify-items: center;
+  gap: 18px;
+  overflow-y: auto;
+  padding: 25px;
+  background: #ead5a7;
+  border: 5px double #49301b;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.8);
+}
+
+/* Alle foto's onder elkaar */
+#gallery.show-all .photo-card {
+  width: 100%;
+  max-width: 620px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Sluitknop boven de popup */
+#toggleArchive {
+  position: relative;
+  z-index: 9999;
+}
+
+body:has(#gallery.show-all) #toggleArchive {
+  position: fixed;
+  top: 12px;
+  right: 20px;
+}
+
+/* Grote foto boven het fotoarchief */
+#viewer {
+  z-index: 10002;
+}
+
+@media (max-width: 600px) {
+  #gallery.show-all {
+    inset: 3vh 3vw;
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
 </style>
 </head>
 
