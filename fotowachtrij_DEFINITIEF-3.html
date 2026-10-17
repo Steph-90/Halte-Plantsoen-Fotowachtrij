@@ -164,6 +164,24 @@ function render(img){
   ctx.beginPath();
   ctx.rect(x,y,w,h);
   ctx.clip();
+   // Originele foto tekenen
+  ctx.filter =
+    "sepia(0.28) " +
+    "saturate(0.82) " +
+    "contrast(1.04) " +
+    "brightness(1.10)";
+
+  ctx.drawImage(img, dx, dy, dw, dh);
+
+  ctx.filter = "none";
+
+  // Subtiele warme verkleuring
+  ctx.globalCompositeOperation = "multiply";
+  ctx.fillStyle = "rgba(105,70,38,0.09)";
+  ctx.fillRect(x, y, w, h);
+
+  // Terug naar de normale tekenmodus
+  ctx.globalCompositeOperation = "source-over";
 
   
   /*
