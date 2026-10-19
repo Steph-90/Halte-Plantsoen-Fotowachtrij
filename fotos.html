@@ -418,9 +418,9 @@ h1{
   position: fixed;
   inset: 5vh 5vw;
   z-index: 9998;
-  display: grid;
-  grid-template-columns: 1fr;
-  align-content: start;
+  display: grid; 
+grid-template-columns: repeat(4, minmax(0, 1fr));
+ align-content: start;
   justify-items: center;
   gap: 18px;
   overflow-y: auto;
@@ -430,10 +430,18 @@ h1{
   box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.8);
 }
 
+@media (max-width: 600px) {
+  #gallery.show-all {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 12px;
+  }
+}
+
 /* Alle foto's onder elkaar */
 #gallery.show-all .photo-card {
   width: 100%;
-  max-width: 620px;
+max-width: none;
   box-sizing: border-box;
   margin: 0;
 }
