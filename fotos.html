@@ -299,17 +299,26 @@ body{
 }
 
 #gallery.show-all {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
+  position: fixed;
+  inset: 3vh 3vw;
+  z-index: 9999;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 20px;
+  overflow-y: auto;
+  background: #cdb486;
+  border: 3px double #6b4b2b;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.8);
 }
 
 @media (max-width: 600px) {
-    #gallery.show-all {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  #gallery.show-all {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    inset: 2vh 2vw;
+    padding: 12px;
+  }
 }
-
 .empty{
   grid-column:1/-1;
   padding:28px 16px;
