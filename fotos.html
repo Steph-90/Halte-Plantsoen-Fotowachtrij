@@ -36,11 +36,33 @@ body{
   box-shadow:0 0 0 5px #302015,0 10px 35px #000b;
 }
 
+
 .masthead{
   text-align:center;
-  padding-bottom:15px;
+  padding:12px 0 15px;
+  border-top:3px double #302015;
   border-bottom:7px double #302015;
+  position:relative;
 }
+
+.masthead::before{
+  content:"✦  ❧  ✦  ❧  ✦";
+  display:block;
+  color:#604326;
+  font-size:15px;
+  letter-spacing:5px;
+  margin-bottom:8px;
+}
+
+.masthead::after{
+  content:"✦  ❧  ✦  ❧  ✦";
+  display:block;
+  color:#604326;
+  font-size:12px;
+  letter-spacing:4px;
+  margin-top:8px;
+}
+
 
 .topline{
   display:flex;
