@@ -136,7 +136,8 @@ function drawCover(img,x,y,w,h){
  ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
  ctx.restore();
 }
-
+const conducteur = new Image();
+conducteur.src = "conducteur.png";
 function render(img){
   canvas.width=filter.naturalWidth;
   canvas.height=filter.naturalHeight;
@@ -180,6 +181,34 @@ const rnd = () => {
   ctx.drawImage(img, dx, dy, dw, dh);
 
   ctx.filter = "none";
+ // De spookachtige conducteur verschijnt op een wisselende plek
+if (conducteur.complete && conducteur.naturalWidth > 0) {
+  ctx.save();
+
+  const cw = dw * 0.25;
+  const ch = cw * (conducteur.naturalHeight / conducteur.naturalWidth);
+
+  const plekken = [
+    [0.05, 0.08],
+    [0.68, 0.08],
+    [0.08, 0.48],
+    [0.68, 0.45],
+    [0.38, 0.18]
+  ];
+
+  const plek = plekken[Math.floor(Math.random() * plekken.length)];
+
+  ctx.globalAlpha = 0.42;
+  ctx.drawImage(
+    conducteur,
+    dx + dw * plek[0],
+    dy + dh * plek[1],
+    cw,
+    ch
+  );
+
+  ctx.restore();
+}
 
   // Subtiele warme verkleuring
   ctx.globalCompositeOperation = "multiply";
