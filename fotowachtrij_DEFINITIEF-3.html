@@ -212,109 +212,23 @@ const rnd = () => {
   }
 
   /*
-   * FIJNE OUDE FILMKORREL
-   */
-  ctx.globalCompositeOperation="overlay";
+  
+/*
+ * SUBTIELE OUDE FILMSTRUCTUUR
+ * Geen witte stippen of willekeurige krassen.
+ */
+ctx.globalCompositeOperation = "multiply";
 
-  for(let i=0;i<1400;i++){
-    const px=x+rnd()*w;
-    const py=y+rnd()*h;
-    const s=0.4+rnd()*1.2;
+for (let i = 0; i < 650; i++) {
+  const px = x + rnd() * w;
+  const py = y + rnd() * h;
+  const alpha = 0.015 + rnd() * 0.025;
 
-    ctx.fillStyle=rnd()>0.5
-      ? `rgba(255,235,190,${0.015+rnd()*0.035})`
-      : `rgba(10,7,4,${0.015+rnd()*0.035})`;
+  ctx.fillStyle = `rgba(55, 38, 22, ${alpha})`;
+  ctx.fillRect(px, py, 1, 1);
+}
 
-    ctx.fillRect(px,py,s,s);
-  }
-
-  /*
-   * FIJNE CRAQUELÉ - korte, onregelmatige haarscheurtjes
-   * Minder lijnen en veel minder opvallend dan voorheen.
-   */
-  ctx.globalCompositeOperation="multiply";
-  ctx.lineCap="round";
-  ctx.lineJoin="round";
-
-  for(let i=0;i<55;i++){
-    let px,py;
-
-    // Ongeveer driekwart bij de randen,
-    // de rest verspreid over de foto.
-    if(rnd()<0.75){
-      const side=Math.floor(rnd()*4);
-
-      if(side===0){
-        px=x+rnd()*w;
-        py=y+rnd()*h*0.12;
-      }else if(side===1){
-        px=x+rnd()*w;
-        py=y+h-rnd()*h*0.12;
-      }else if(side===2){
-        px=x+rnd()*w*0.10;
-        py=y+rnd()*h;
-      }else{
-        px=x+w-rnd()*w*0.10;
-        py=y+rnd()*h;
-      }
-    }else{
-      px=x+rnd()*w;
-      py=y+rnd()*h;
-    }
-
-    const len=18+rnd()*30;
-    const angle=rnd()*Math.PI*2;
-
-    ctx.beginPath();
-    ctx.moveTo(px,py);
-
-    for(let j=0;j<4;j++){
-      px+=Math.cos(angle+(rnd()-0.5)*0.9)*len/3;
-      py+=Math.sin(angle+(rnd()-0.5)*0.9)*len/3;
-      ctx.lineTo(px,py);
-    }
-
-    ctx.strokeStyle=`rgba(58,35,20,${0.16+rnd()*0.20})`;
-    ctx.lineWidth=1+rnd()*1.2;
-    ctx.stroke();
-  }
-
-  /*
-   * ENKELE FIJNE KRASSEN
-   * Kort, dun en niet als lange lijnen door de foto.
-   */
-  for(let i=0;i<28;i++){
-    let px,py;
-    const side=Math.floor(rnd()*4);
-
-    if(side===0){
-      px=x+rnd()*w;
-      py=y+rnd()*h*0.16;
-    }else if(side===1){
-      px=x+rnd()*w;
-      py=y+h-rnd()*h*0.16;
-    }else if(side===2){
-      px=x+rnd()*w*0.12;
-      py=y+rnd()*h;
-    }else{
-      px=x+w-rnd()*w*0.12;
-      py=y+rnd()*h;
-    }
-
-    const len=16+rnd()*32;
-    const angle=rnd()*Math.PI*2;
-
-    ctx.beginPath();
-    ctx.moveTo(px,py);
-    ctx.lineTo(
-      px+Math.cos(angle)*len,
-      py+Math.sin(angle)*len
-    );
-
-    ctx.strokeStyle=`rgba(42,26,15,${0.18+rnd()*0.20})`;
-    ctx.lineWidth=0.8+rnd()*1.2;
-    ctx.stroke();
-  }
+ctx.globalCompositeOperation = "source-over";
 
   /*
    * ECHTE RANDSLIJTAGE
