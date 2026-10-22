@@ -190,13 +190,13 @@ if (conducteur.complete && conducteur.naturalWidth > 0) {
 
  const plek = [0.73, 0.12];
 
-  const plek = plekken[Math.floor(Math.random() * plekken.length)];
+  const gekozenPlek = plekken[Math.floor(Math.random() * plekken.length)];
 
   ctx.globalAlpha = 0.70;
   ctx.drawImage(
     conducteur,
-    dx + dw * plek[0],
-    dy + dh * plek[1],
+    dx + dw * gekozenPlek[0],
+    dy + dh * gekozenPlek[1],
     cw,
     ch
   );
