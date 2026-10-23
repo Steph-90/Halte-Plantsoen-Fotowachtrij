@@ -185,11 +185,11 @@ const rnd = () => {
 if (conducteur.complete && conducteur.naturalWidth > 0) {
   ctx.save();
 
-  const cw = dw * 0.32;
-  const ch = cw * (conducteur.naturalHeight / conducteur.naturalWidth);
+  const cw = dw * 0.22;
+const ch = cw * (conducteur.naturalHeight / conducteur.naturalWidth);
 
-const plek = [0.80, 0.45];
-
+const plek = [0.72, 0.35];
+ 
   ctx.globalAlpha = 0.70;
   ctx.drawImage(
     conducteur,
